@@ -2,3 +2,5 @@ baseURL = "http://example.org/"
 languageCode = "en-us"
 title = "Celia García Márquez"
 
+[outputs]
+  home = ["HTML", "JSON"]

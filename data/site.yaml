@@ -5,5 +5,12 @@ copyright: Celia Garcia Marquez © 2020-2021 Copyright.
 description: Portfolio y blog personal de Celia Garcia Marquez.
 
 customMenus:
-- name: Blog
+- name: Docs
   url: https://hossainemruz.gitbook.io/posts/
+
+openGraph:
+  title: John's Blog
+  type: website
+  description: Portfolio and personal blog of John Doe.
+  image: images/author/john.png
+  url: https://hugo-toha.github.io
