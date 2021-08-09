@@ -1,0 +1,31 @@
+# section information
+section:
+  name: Formación
+  id: education
+  template: sections/education.html # Use "sections/education-alt.html for alternate template.
+  enable: true
+  weight: 4
+  showOnNavbar: true
+  # Can optionally hide the title in sections
+  # hideTitle: true
+
+degrees:
+- name: IES Gonzalo Nazareno. Dos Hermanas (Sevilla)
+  icon: fa-graduation-cap
+  timeframe: 2018-2021
+  institution:
+    name: Técnico Superior en Administración de Sistemas Informáticos en red
+    url: "https://dit.gonzalonazareno.org/gestiona/"
+  publications: #(optional)
+  - title: EvenTickOnes. API desarrollada con python3, flask y restful. Busca los eventos más próximos en todo el mundo utilizando el servicio web de TicketMaster.
+    url: "https://cgmtick.herokuapp.com/"
+  - title: Miwuf. Creacion de Página web HTML5 y css3 mediante modificaciones de plantilla.
+    url: "http://miwuf.000webhostapp.com/"
+
+- name: IES Almudeyne. Los Palacios y Vfca. Sevilla.
+  icon: fa-graduation-cap
+  timeframe: 2012-2016
+  institution:
+    name: Bachillerato de Ciencias Sociales y Económicas
+    url: "#"
+    

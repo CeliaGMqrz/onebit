@@ -1,0 +1,48 @@
+# section information
+section:
+  name: Sobre mí
+  id: about
+  enable: true
+  weight: 1
+  showOnNavbar: true
+  template: sections/about.html
+
+# your designation
+designation: Administradora de sistemas
+# your company information
+# company:
+#   name: IES Gonzalo Nazareno
+#   url: "https://www.example.com"
+
+# your resume. this file path should be relative to you "static" directory
+resume: "files/CV_celia_garcia.pdf"
+
+# a summary about you
+summary: 'Soy estudiante de CFGS Administración de Sistemas Informáticos en Red en el IES Gonzalo Nazareno (Dos Hermanas, Sevilla) .'
+
+# your social links
+# give as many as you want. use font-awesome for the icons.
+socialLinks:
+- name: Email
+  icon: "fas fa-envelope"
+  url: "cg.marquez95@gmail.com"
+
+- name: Github
+  icon: "fab fa-github"
+  url: "https://github.com/CeliaGMqrz"
+
+- name: LinkedIn
+  icon: "fab fa-linkedin"
+  url: "https://www.linkedin.com/in/cgmarquez/"
+
+# your soft skills
+# give the percentage between 50 to 100 with 5 intervals.
+# currently supported colors: blue, yellow, pink, green, sky, orange
+softSkills:
+- name: Linux
+  percentage: 90
+  color: pink
+- name: Windows
+  percentage: 80
+  color: blue
+

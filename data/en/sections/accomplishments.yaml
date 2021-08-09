@@ -1,0 +1,36 @@
+# section information
+section:
+  name: Cursos y Certificados
+  id: accomplishments
+  enable: true
+  weight: 5
+  showOnNavbar: true
+  # Can optionally hide the title in sections
+  # hideTitle: true
+
+
+# Your accomplishments
+accomplishments:
+- name: "Curso de SSH: Imprescindible en tiempos modernos"
+  timeline: "Nov 2020"
+  organization:
+    name: OpenWebinars
+    url: https://openwebinars.net
+  courseOverview: Curso base de SSH sobre linux y Windows. Instalación, métodos de autenticación, gestión de ficheros y configuración de clientes y servidor.
+  certificateURL: "https://openwebinars.net/cert/4DjD6"
+
+- name: "Curso de SQL desde cero"
+  timeline: "Jul 2020"
+  organization:
+    name: OpenWebinars
+    url: https://openwebinars.net
+  courseOverview: Curso base de SQL
+  certificateURL: "/files/sql.pdf"
+
+- name: "MongoDB Basics"
+  timeline: "Mar 2020"
+  organization:
+    name: MongoDB University
+    url: https://university.mongodb.com/
+  courseOverview: "Curso base de MongoDB"
+  certificateURL: "/files/mongodb.pdf"

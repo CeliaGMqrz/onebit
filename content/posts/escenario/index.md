@@ -1,0 +1,39 @@
+---
+title: "Escenario planteado sobre openstack"
+date: 2021-01-02
+description: Proyecto de ciclo en openstack
+menu:
+  sidebar:
+    name: Escenario openstack
+    identifier: escenario
+    weight: 15
+---
+
+## Introducción
+
+En el IES Gonzalo Nazareno, en el segundo año del ciclo superior de Administración de sistemas informáticos en red, se ha propuesto un escenario implantado sobre Openstack en el que nosotros, los alumnos, hemos puesto en práctica muchas tareas relacionadas con servidores linux. 
+
+Trabajamos con sistemas operativos Linux, entre ellos con distribuciones como Debian Buster, Centos7, Centos8 y Ubuntu Server 20.04. 
+
+Tratamos con los diferentes sistemas y la instalación y configuración de servidores web como Apache2 o Nginx, bases de datos, cifrado con openssl, servicios como bind9 para DNS, directorio activo como OpenLDAP, entre otros...
+
+## Listado de tareas
+
+> Las tareas se irán actualizando y modificando a lo largo del curso.
+
+1.  [Instalación y configuración inicial de los servidores]()
+ 
+2. [Actualización de Centos7 a Centos8]()
+
+3. [Añadir red DMZ. Modificación del escenario]()
+
+4.  [Instalación y configuración inicial de OpenLDAP]()
+
+5. [Configuración de un DNS con bind9. Freston]()
+
+6. [Servidor Web Apache2 en Centos 8. Quijote]()
+
+7. [Configuración de HTTPS en Centos8. Quijote]() 
+
+8. [Configuración de MariaDB en Ubuntu. Sancho]()
+

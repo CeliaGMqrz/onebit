@@ -1,0 +1,17 @@
+# some information about you
+name: "Celia García Márquez"
+nickname: ""
+# greeting message before your name. it will default to "Hi! I am" if not provided
+greeting: ""
+image: "images/author/avatar_red.jpg"
+# give your some contact information. they will be used in the footer
+contactInfo:
+  email: "cg.marquez95@gmail.com"
+  phone: "+34 646 182 731"
+
+# some summary about what you do
+summary:
+  - Bienvenid@ a mi página web!  
+  - Soy Administradora de Sistemas  
+  - Aquí podrás ver mi blog y mis competencias  
+
