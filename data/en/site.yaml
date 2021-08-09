@@ -16,7 +16,7 @@ customMenus:
   url: https://www.celiagm.es/posts/introduction/
 # Specify OpenGraph Headers
 openGraph:
-  title: Página web de Celia García
+  title: Celia García Márquez
   image: "/images/openg.png"
   type: website
   description: Blog sobre informática
