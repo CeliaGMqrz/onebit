@@ -13,7 +13,7 @@ description: Website of Celia García and personal blog.
 # they will be separated by a divider from the main menus.
 customMenus:
 - name: Blog
-  url: wwww.celiagm.es/posts/introduction/
+  url: https://www.celiagm.es/posts/introduction/
 # Specify OpenGraph Headers
 openGraph:
   title: Página web de Celia García
