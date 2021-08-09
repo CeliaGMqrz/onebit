@@ -17,7 +17,7 @@ customMenus:
 # Specify OpenGraph Headers
 openGraph:
   title: Página web de Celia García
-  image: "/images/noname.png"
+  image: "/images/default-hero.png"
   type: website
   description: Portfolio y blog de Celia García
   url: https://www.celiagm.es
