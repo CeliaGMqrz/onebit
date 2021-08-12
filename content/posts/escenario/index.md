@@ -25,17 +25,17 @@ Tratamos con los diferentes sistemas y la instalación y configuración de servi
 
 2.  [Deshabilitar la seguridad de puertos](https://www.celiagm.es/posts/sistemas/openstack/client/)  
  
-3. [Actualización de Centos7 a Centos8]()
+3. [Actualización de Centos7 a Centos8](https://www.celiagm.es/posts/sistemas/centos8/)
 
-4. [Añadir red DMZ. Modificación del escenario]()
+4. [Añadir red DMZ. Modificación del escenario](https://www.celiagm.es/posts/seguridad/red_dmz/)
 
-5.  [Instalación y configuración inicial de OpenLDAP]()
+5.  [Instalación y configuración inicial de OpenLDAP](https://www.celiagm.es/posts/servicios/ldap/instalacionldap/)
 
-6. [Configuración de un DNS con bind9. Freston]()
+6. [Configuración de un DNS con bind9. Freston](https://www.celiagm.es/posts/servicios/bind9/)
 
-7. [Servidor Web Apache2 en Centos 8. Quijote]()
+7. [Servidor Web Apache2 en Centos 8. Quijote](https://www.celiagm.es/posts/servicios/apache/apache_centos/)
 
-8. [Configuración de HTTPS en Centos8. Quijote]() 
+8. [Configuración de HTTPS en Centos8. Quijote](https://www.celiagm.es/posts/seguridad/https_centos/) 
 
-9. [Configuración de MariaDB en Ubuntu. Sancho]()
+9. [Configuración de MariaDB en Ubuntu. Sancho](https://www.celiagm.es/posts/sgbd/mysql/install_mysql_centos8/)
 

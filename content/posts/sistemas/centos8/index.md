@@ -9,6 +9,11 @@ menu:
     weight: 150
 ---
 
+{{< alert type="info" >}}
+Este post está directamente relacionado al escenario planteado sobre **openstack** puedes ver el orden de las entradas en el siguiente enlace: 
+[Escenario planteado sobre openstack](https://www.celiagm.es/posts/escenario/)
+{{< /alert >}}
+
 ### Objetivo:
 
 Actualizar CentOS 7 a CentOS 8 garantizando que todos los servicios previos continúen funcionando:

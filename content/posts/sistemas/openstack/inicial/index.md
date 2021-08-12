@@ -47,7 +47,7 @@ Escenario gráfico:
 
 ### 3.0. Deshabilitar la seguidad de puertos
 
-Guía para: [Instalar Openstackclient y deshabilitar la seguridad de puertos](https://unbitdeinformacioncadadia.netlify.app/posts/2020/11/instalar-openstackclient-y-deshabilitar-la-seguridad-de-puertos/)
+Guía para: [Instalar Openstackclient y deshabilitar la seguridad de puertos](https://www.celiagm.es/posts/sistemas/openstack/client/)
 
 
 ### 3.1. Activar el bit de fordward
@@ -641,4 +641,4 @@ Tue Nov 24 13:46:49 CET 2020
 
 
 -> Continua el proyecto en:
-[Actualización de Centos7 a Centos8](https://unbitdeinformacioncadadia.netlify.app/posts/2020/11/actualizacion-de-centos7-a-centos8/)
+[Actualización de Centos7 a Centos8](https://www.celiagm.es/posts/sistemas/centos8/)

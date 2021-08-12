@@ -11,11 +11,10 @@ menu:
 
 # Modificación del escenario
 
-_____
-Si no has visto la primera parte se encuentra aquí ⬇️
-
-[**Configuración inicial de los servidores. Escenario**]()
-______
+{{< alert type="info" >}}
+Este post está directamente relacionado al escenario planteado sobre **openstack** puedes ver el orden de las entradas en el siguiente enlace: 
+[Escenario planteado sobre openstack](https://www.celiagm.es/posts/escenario/)
+{{< /alert >}}
 
 ## Objetivo:
 

@@ -10,7 +10,10 @@ menu:
 ---
 
 
-**¡!** Este post está relacionado con un entrono de trabajo con openstack incluido en otras entradas de mi blog.
+{{< alert type="info" >}}
+Este post está directamente relacionado al escenario planteado sobre **openstack** puedes ver el orden de las entradas en el siguiente enlace: 
+[Escenario planteado sobre openstack](https://www.celiagm.es/posts/escenario/)
+{{< /alert >}}
 
 ### 1. Introducción
 

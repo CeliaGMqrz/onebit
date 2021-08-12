@@ -10,10 +10,11 @@ menu:
 ---
 
 
-![https.jpeg](/images/posts/candado.jpeg)
+{{< alert type="info" >}}
+Este post está directamente relacionado al escenario planteado sobre **openstack** puedes ver el orden de las entradas en el siguiente enlace: 
+[Escenario planteado sobre openstack](https://www.celiagm.es/posts/escenario/)
+{{< /alert >}}
 
-
-**¡!** Este post está relacionado con un entrono de trabajo con openstack incluido en otras entradas de mi blog.
 
 ### 1. Creación de un certificado SSL Wilcard
 
