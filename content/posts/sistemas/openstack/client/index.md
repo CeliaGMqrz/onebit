@@ -7,7 +7,6 @@ menu:
     identifier: i_openstack
     parent: systems
     weight: 700
-hero: images/openstack.png
 ---
 
 Necesitamos instalar *Openstackclient*, para ello lo vamos hacer desde un entorno virtual para no comprometer la paquetería de nuestro sistema, ya que no es necesario para nuestro sistema actualmente.

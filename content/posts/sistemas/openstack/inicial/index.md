@@ -41,7 +41,7 @@ Pasos a realizar:
 
 Escenario gráfico:
 
-![escenario.png](/images/escenario/escenario.png)
+![escenario.png](/images/posts/escenario/escenario.png)
 
 ## 3. Configuración de NAT en Dulcinea 
 
@@ -54,11 +54,11 @@ Guía para: [Instalar Openstackclient y deshabilitar la seguridad de puertos](ht
 
 Para que nuestra máquina actúe como router tenemos que activar el **bit de fordward.** Podemos hacerlo temporal o permanente. En este caso lo haremos permanente. Para ello editamos el fichero */etc/sysctl.conf* , buscamos la línea ‘**net.ipv4.ip_fordward=1**' y la descomentamos.
 
-```powershell
+```shell
 nano /etc/sysctl.conf 
 ```
 
-```powershell
+```shell
 # Uncomment the next line to enable packet forwarding for IPv4
 net.ipv4.ip_forward=1
 ```
@@ -67,7 +67,7 @@ net.ipv4.ip_forward=1
 
 En segundo lugar vamos a configurar el fichero */etc/network/interfaces* agregando dos reglas de **‘iptable’** para que nuestros clientes puedan acceder desde una interfaz a otra obteniendo acceso a internet. Añadiremos las siguientes líneas:
 
-```powershell
+```shell
 nano /etc/network/interfaces
 ```
 
@@ -83,7 +83,7 @@ Las añadimos de forma permanente en el fichero interfaces, de forma que:
 
 * -j MASQUERADE: Cambia la dirección de origen (eth1) por la dirección de salida (eth0)
 
-```powershell
+```shell
 # This file describes the network interfaces available on your system
 # and how to activate them. For more information, see interfaces(5).
 
@@ -118,11 +118,11 @@ source /etc/network/interfaces.d/*
 
 Comprobamos que las reglas de iptable estan funcionando
 
-```powershell
+```shell
 sudo iptables -t nat -L -nv
 ```
 
-```powershell
+```shell
 debian@dulcinea:~$ sudo iptables -t nat -L -nv
 Chain PREROUTING (policy ACCEPT 0 packets, 0 bytes)
  pkts bytes target     prot opt in     out     source               destination         
@@ -143,7 +143,7 @@ Chain OUTPUT (policy ACCEPT 0 packets, 0 bytes)
 * Accedemos a Sancho y a Quijote por ssh desde Ducinea.
 * Le cambiamos la contraseña a todas las instancias.
 
-```powershell
+```shell
 passwd root
 passwd nombre_de_usuario ({debian},{ubuntu},{sancho})
 ``` 
@@ -154,11 +154,11 @@ passwd nombre_de_usuario ({debian},{ubuntu},{sancho})
 
 Editamos el fichero de configuración de interfaces
 
-```powershell
+```shell
 nano -c /etc/netplan/50-cloud-init.yaml
 ```
 
-```powershell
+```shell
 # This file is generated from information provided by the datasource.  Changes
 # to it will not persist across an instance reboot.  To disable cloud-init's
 # network configuration capabilities, write a file
@@ -180,13 +180,13 @@ network:
 
 Aplicamos los cambios
 
-```powershell
+```shell
 netplan apply
 ```
 
 Comprobamos que la* puerta de enlace* apunte a Dulcinea
 
-```powershell
+```shell
 root@sancho:/home/ubuntu# ip r
 default via 10.0.1.6 dev ens3 
 10.0.1.0/24 dev ens3 proto kernel scope link src 10.0.1.11 
@@ -195,7 +195,7 @@ default via 10.0.1.6 dev ens3
 
 Comprobamos que tenemos *acceso al exterior*
 
-```powershell
+```shell
 root@sancho:/home/ubuntu# ping 172.22.0.1
 PING 172.22.0.1 (172.22.0.1) 56(84) bytes of data.
 64 bytes from 172.22.0.1: icmp_seq=1 ttl=62 time=1.47 ms
@@ -211,7 +211,7 @@ rtt min/avg/max/mdev = 1.467/1.670/1.874/0.203 ms
 
 Buscamos el fichero de configuración de interfaces
 
-```powershell
+```shell
 [centos@quijote ~]$ ls -l /etc/sysconfig/network-scripts/ifcfg-*
 -rw-r--r--. 1 root root 168 Nov 18 16:58 /etc/sysconfig/network-scripts/ifcfg-eth0
 -rw-r--r--. 1 root root 254 Aug 19  2019 /etc/sysconfig/network-scripts/ifcfg-lo
@@ -219,10 +219,10 @@ Buscamos el fichero de configuración de interfaces
 ```
 Editamos el fichero:
 
-```powershell
+```shell
 vi /etc/sysconfig/network-scripts/ifcfg-eth0 
 ```
-```powershell
+```shell
 # Created by cloud-init on instance boot automatically, do not edit.
 #
 BOOTPROTO="static"
@@ -241,12 +241,12 @@ Desactivamos el cloud-init
 
 Para ello creamos un fichero en /etc/cloud
 
-```powershell
+```shell
 nano /etc/cloud/cloud-init.disabled
 ```
 Le añadimos lo siguiente
 
-```powershell
+```shell
 cloud-init=disabled
 ```
 
@@ -254,13 +254,13 @@ Reiniamos el servicio
 
 Reiniciamos la máquina
 
-```powershell
+```shell
 systemctl restart network.service
 ```
 
 Comprobamos la **puerta de enlace**:
 
-```powershell
+```shell
 [root@quijote centos]# ip r
 default via 10.0.1.6 dev eth0 
 10.0.0.0/8 dev eth0 proto kernel scope link src 10.0.1.13 
@@ -269,7 +269,7 @@ default via 10.0.1.6 dev eth0
 
 Comprobamos el **acceso al exterior**:
 
-```powershell
+```shell
 [root@quijote centos]# ping 172.22.0.1
 PING 172.22.0.1 (172.22.0.1) 56(84) bytes of data.
 64 bytes from 172.22.0.1: icmp_seq=1 ttl=62 time=1.36 ms
@@ -284,17 +284,17 @@ rtt min/avg/max/mdev = 1.364/1.432/1.500/0.068 ms
 
 Vamos a la pataforma del cloud, en Networks >> (Seleccionamos la interfaz interna) celia.garcia >> Subnets >> Edit Subnet >> Next >> (Deshabilitamos el DCHP) Enable DCHP
 
-![disable_dhcp.jpeg](/images/escenario/disable_dhcp.jpeg)
+![disable_dhcp.jpeg](/images/posts/escenario/disable_dhcp.jpeg)
 
 Una vez deshabilitado vamos a **Sancho**:
 
-```powershell
+```shell
 ip a del 10.0.1.11/24 dev ens3
 ```
 
 Intentamos hacer una petición al DCHP
 
-```powershell
+```shell
 dhclient ens3
 ```
 
@@ -302,13 +302,13 @@ No obtenemos respuesta por lo que está correctamente deshabilitado.
 
 Ahora vamos a reiniciar el servicio de red
 
-```powershell
+```shell
 netplan apply
 ```
 
 Comprobamos que tenemos de nuevo nuestra configuración estática:
 
-```powershell
+```shell
 root@sancho:/home/ubuntu# ip a
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
@@ -325,7 +325,7 @@ root@sancho:/home/ubuntu# ip a
 
 ```
 
-```powershell
+```shell
 root@sancho:/home/ubuntu# ip r
 default via 10.0.1.6 dev ens3 proto static 
 10.0.1.0/24 dev ens3 proto kernel scope link src 10.0.1.11 
@@ -338,7 +338,7 @@ Comprobamos que no tenemos respuesta por DHCP ya que lo hemos deshabilitado
 
 Comprobamos que al reiniciar nuestro servicio de red configurado estaticamente tenemos acceso al exterior
 
-```powershell
+```shell
 [root@quijote centos]# ping 172.22.0.1
 PING 172.22.0.1 (172.22.0.1) 56(84) bytes of data.
 64 bytes from 172.22.0.1: icmp_seq=1 ttl=62 time=1.44 ms
@@ -360,13 +360,13 @@ El **agente ssh**, es un programa auxiliar que realiza un seguimiento de las cla
 
 Normalmente no se inicia automáticamente al inciar el servidor por lo que tenemos que ejecutarlo manualmente
 
-```powershell
+```shell
 ssh-agent
 ```
 
 Salida:
 
-```powershell
+```shell
 SSH_AUTH_SOCK=/tmp/ssh-wMUFa5ft1Ae2/agent.13399; export SSH_AUTH_SOCK;
 SSH_AGENT_PID=13400; export SSH_AGENT_PID;
 echo Agent pid 13400;
@@ -374,7 +374,7 @@ echo Agent pid 13400;
 
 Verificamos el valor de la variable que esté configurada
 
-```powershell
+```shell
 debian@dulcinea:~$ echo $SSH_AUTH_SOCK
 /tmp/ssh-P9bFFkcDoMSo/agent.13396
 ```
@@ -382,17 +382,17 @@ debian@dulcinea:~$ echo $SSH_AUTH_SOCK
 
 Agregamos las claves que tenemos en el fichero .ssh, si no le indicamos ruta agregará todas las que se encuentren dentro de .ssh
 
-```powershell
+```shell
 ssh-add
 ```
-```powershell
+```shell
 debian@dulcinea:~$ ssh-add
 Identity added: /home/debian/.ssh/id_rsa (celiagm@debian)
 ```
 
 Otras opciones de utilidad
 
-```powershell
+```shell
 # Listar las claves privadas
 ssh-add -l
 # Listar las claves públicas
@@ -404,7 +404,7 @@ ssh-add -D
 Ahora ya podemos entrar directamente a Sancho y a Quijote sin especificar la clave
 
 **SANCHO:**
-```powershell
+```shell
 debian@dulcinea:~$ ssh ubuntu@10.0.1.11
 Welcome to Ubuntu 20.04.1 LTS (GNU/Linux 5.4.0-48-generic x86_64)
 
@@ -436,7 +436,7 @@ ubuntu@sancho:~$
 ```
 **CENTOS:**
 
-```powershell
+```shell
 debian@dulcinea:~$ ssh centos@10.0.1.13
 Last login: Mon Nov 23 15:59:55 2020 from host-10-0-1-6.openstacklocal
 [centos@quijote ~]$ 
@@ -449,24 +449,24 @@ Last login: Mon Nov 23 15:59:55 2020 from host-10-0-1-6.openstacklocal
 
 Creamos el usuario profesor y lo añadimos al grupo sudo:
 
-```powershell
+```shell
 adduser profesor
 adduser profesor sudo
 
 ```
 Editamos el fichero 'sudoers' e indicamos que el usuario no precise de contraseña al usar sudo
 
-```powershell
+```shell
 nano /etc/sudoers
 ```
 
-```powershell
+```shell
 profesor ALL=(ALL) NOPASSWD:ALL
 ```
 
 * Sancho (Ponemos la misma configuración en *sudoers*)
 
-```powershell
+```shell
 useradd profesor
 usermod profesor -g sudo
 passwd profesor
@@ -475,7 +475,7 @@ nano /etc/sudoers
 
 * Quijote
 
-```powershell
+```shell
 adduser profesor
 passwd profesor
 usermod -aG wheel profesor
@@ -491,7 +491,7 @@ Para ello he copiado las claves públicas al fichero authorized_keys del usuario
 
 Repositorios de Dulcinea
 
-```powershell
+```shell
 deb http://deb.debian.org/debian/ buster main
 #deb-src http://deb.debian.org/debian/ buster main
 deb http://deb.debian.org/debian/ buster-updates main
@@ -502,7 +502,7 @@ deb http://security.debian.org/ buster/updates main
 ```
 Actualizamos
 
-```powershell
+```shell
 apt update
 apt list --upgradable
 apt upgrade
@@ -514,12 +514,12 @@ Debemos asegurarnos que tenemos resolución de nombres
 
 Fichero /etc/resolv
 
-```powershell
+```shell
 nameserver 192.168.202.2
 ```
 Actualizamos
 
-```powershell
+```shell
 apt update
 apt upgrade
 ```
@@ -529,7 +529,7 @@ apt upgrade
 
 Los repositorios de centos se ubican en :
 
-```powershell
+```shell
 [centos@quijote ~]$ ls -l /etc/yum.repos.d/
 total 36
 -rw-r--r--. 1 root root 1664 Apr  7  2020 CentOS-Base.repo
@@ -545,20 +545,20 @@ total 36
 
 Actualizamos
 
-```powershell
+```shell
 yum update
 ```
 
 ## 12. Hasta que no esté configurado el servidor DNS, incluye resolución estática en las tres instancias tanto usando nombre completo como hostname
 
-```powershell
+```shell
 nano /etc/hosts
 ```
 
 
 **Dulcinea**
 
-```powershell
+```shell
 127.0.1.1 dulcinea.celia.gonzalonazareno.org dulcinea
 127.0.0.1 localhost
 10.0.1.13 quijote.celia.gonzalonazareno.org quijote
@@ -575,7 +575,7 @@ ff02::3 ip6-allhosts
 
 **Sancho**
 
-```powershell
+```shell
 127.0.0.1 localhost
 127.0.1.1 sancho.celia.gonzalonazareno.org sancho
 10.0.1.6 dulcinea.celia.gonzalonazareno.org dulcinea
@@ -592,7 +592,7 @@ ff02::3 ip6-allhosts
 
 **Quijote**
 
-```powershell
+```shell
 127.0.0.1   localhost localhost.localdomain localhost4 localhost4.localdomain4
 ::1         localhost localhost.localdomain localhost6 localhost6.localdomain6
 127.0.0.1   quijote.celia.gonzalonazareno.org quijote
@@ -607,17 +607,17 @@ ff02::3 ip6-allhosts
 
 Listamos las zonas 
 
-```powershell
+```shell
 timedatectl list-timezones
 ```
 Cambiamos la zona 
 
-```powershell
+```shell
 timedatectl set-timezone Europe/Madrid
 ```
 Comprobamos la hora
 
-```powershell
+```shell
 root@dulcinea:/home/debian# date
 Tue 24 Nov 2020 01:42:16 PM CET
 ```
@@ -625,7 +625,7 @@ Se sigue el mismo procedimiento con Sancho y Quijote.
 
 **Sancho**
 
-```powershell
+```shell
 root@sancho:/home/ubuntu# timedatectl set-timezone Europe/Madrid
 root@sancho:/home/ubuntu# date
 Tue Nov 24 13:46:08 CET 2020
@@ -633,7 +633,7 @@ Tue Nov 24 13:46:08 CET 2020
 
 **Quijote**
 
-```powershell
+```shell
 [root@quijote centos]# timedatectl set-timezone Europe/Madrid
 [root@quijote centos]# date
 Tue Nov 24 13:46:49 CET 2020
