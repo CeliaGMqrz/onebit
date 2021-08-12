@@ -9,11 +9,17 @@ menu:
     weight: 10
 ---
 
-Descripción:
+{{< alert type="info" >}}
+Este post está directamente relacionado al escenario planteado sobre **openstack** puedes ver el orden de las entradas en el siguiente enlace: 
+[Escenario planteado sobre openstack](https://www.celiagm.es/posts/escenario/)
+{{< /alert >}}
+_____________________________________________________________________
 
-Realiza la instalación y configuración básica de OpenLDAP en frestón utilizando como base el nombre DNS asignado.
+**Descripción**
 
-Crea dos unidades organizativas, una para personas y otra para grupos.
+**Realiza la instalación y configuración básica de OpenLDAP en frestón utilizando como base el nombre DNS asignado.**
+
+**Crea dos unidades organizativas, una para personas y otra para grupos.**
 
 _____________________________________________________________________________________
 

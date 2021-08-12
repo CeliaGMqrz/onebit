@@ -9,15 +9,12 @@ menu:
     weight: 10
 ---
 
-![banner.jpg](/images/posts/dns/banner.jpg)
+{{< alert type="info" >}}
+Este post está directamente relacionado al escenario planteado sobre **openstack** puedes ver el orden de las entradas en el siguiente enlace: 
+[Escenario planteado sobre openstack](https://www.celiagm.es/posts/escenario/)
+{{< /alert >}}
 
-Este artículo trata sobre la instalación de un servidor web Apache2 sobre Centos8 incluido dentro de un entorno previamente creado en un cloud. Las entradas anteriores son las siguientes:
 
-* [Instalación inicial de los servidores](https://unbitdeinformacioncadadia.netlify.app/posts/2020/11/instalaci%C3%B3n-y-configuraci%C3%B3n-inicial-de-los-servidores/)
-
-* [Modificación del escenario](https://unbitdeinformacioncadadia.netlify.app/posts/2020/12/red-dmz.-modificacion-del-escenario./)
-
-* [Actualización de Centos7 a Centos8](https://unbitdeinformacioncadadia.netlify.app/posts/2020/11/actualizacion-de-centos7-a-centos8/)
 
 ## 1. Descripción de la tarea:
 

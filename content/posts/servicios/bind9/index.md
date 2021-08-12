@@ -9,6 +9,11 @@ menu:
     weight: 30
 ---
 
+{{< alert type="info" >}}
+Este post está directamente relacionado al escenario planteado sobre **openstack** puedes ver el orden de las entradas en el siguiente enlace: 
+[Escenario planteado sobre openstack](https://www.celiagm.es/posts/escenario/)
+{{< /alert >}}
+
 ### Objetivo:
 
 Vamos  a instalar un servidor dns en freston que nos permita gestionar la resolución directa e inversa de nuestros nombres. Cada alumno va a poseer un servidor dns con autoridad sobre un subdominio de nuestro dominio principal **gonzalonazareno.org**, que se llamará **tu_nombre.gonzalonazareno.org**. A partir de este momento no será necesario la resolución estática en los servidores.
@@ -678,10 +683,10 @@ _______________________________________________________________________________
 
 ## Servidor Web
 
-[Configurar un servidor web Apache2 en Centos8](https://unbitdeinformacioncadadia.netlify.app/posts/2021/01/servidor-web-apache2-httpd-en-centos8/)
+[Configurar un servidor web Apache2 en Centos8](https://www.celiagm.es/posts/servicios/apache/apache_centos/)
 
 
 
 ## Servidor de base de datos
 
-[Configurar Mariadb en Ubuntu](https://unbitdeinformacioncadadia.netlify.app/posts/2021/01/servidor-de-base-de-datos.-mariadb-en-ubuntu/)
+[Configurar Mariadb en Ubuntu](https://www.celiagm.es/posts/sgbd/mysql/install_mysql_centos8/)
