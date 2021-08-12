@@ -9,6 +9,12 @@ menu:
     weight: 700
 ---
 
+{{< alert type="info" >}}
+Este post está directamente relacionado al escenario planteado sobre **openstack** puedes ver el orden de las entradas en el siguiente enlace: 
+[Escenario planteado sobre openstack](https://www.celiagm.es/posts/escenario/)
+{{< /alert >}}
+
+
 Necesitamos instalar *Openstackclient*, para ello lo vamos hacer desde un entorno virtual para no comprometer la paquetería de nuestro sistema, ya que no es necesario para nuestro sistema actualmente.
 
 _____________________________________________________________________
