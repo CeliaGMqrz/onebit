@@ -1,6 +1,6 @@
 ---
 title: "Introducción a Docker"
-date: 2021-03-16
+date: 2021-08-24
 menu:
   sidebar:
     name: "Introducción a Docker"
