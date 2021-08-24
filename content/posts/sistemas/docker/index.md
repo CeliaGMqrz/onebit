@@ -9,7 +9,7 @@ menu:
     weight: 500
 hero: images/docker.png
 ---
-
+______________
 En este post vamos a dar una breve introducción de Docker:
 
 * ¿Qué son los contenedores?
@@ -19,7 +19,7 @@ En este post vamos a dar una breve introducción de Docker:
 * Gestión de contenedores
 * Gestión de Imágenes 
 * Ejemplos con NGINX
-
+______________
 
 ## ¿Qué son los contendores?
 
