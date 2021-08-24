@@ -24,7 +24,7 @@ En este post vamos a dar una breve introducción de Docker:
 - [Gestión de imágenes](#gestión-de-imágenes)
   - [Crear imágenes. Fichero Dockerfile](#crear-imágenes-fichero-dockerfile)
   - [Ejemplo 1: Crear imagen con Nginx](#ejemplo-1-crear-imagen-con-nginx)
-  - [Ejemplo 2: CREAR UNA VERSIÓN NUEVA DE LA APP](#ejemplo-2-crear-una-versión-nueva-de-la-app)
+  - [Ejemplo 2: Crear una nueva version de la app](#ejemplo-2-crear-una-nueva-version-de-la-app)
   - [Funcionamiento](#funcionamiento)
 ______________
 
@@ -413,7 +413,7 @@ Para modificar una aplicación, sea cual sea, NO se puede entrar en el contenedo
 {{< /alert >}}
 
 
-### Ejemplo 2: CREAR UNA VERSIÓN NUEVA DE LA APP 
+### Ejemplo 2: Crear una nueva version de la app
 
 1. Vamos a utilizar la misma imagen que estabamos usando hasta ahora, para modificar la aplicación, en este caso, vamos a crear un fichero `index.html` simple (en el directorio actual)
 
