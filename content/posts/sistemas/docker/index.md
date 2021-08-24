@@ -12,16 +12,23 @@ hero: images/docker.png
 ______________
 En este post vamos a dar una breve introducción de Docker:
 
-* ¿Qué son los contenedores?
-* ¿Qué es Docker? 
-* Instalación de Docker
-* Ejecutar Docker sin SUDO 
-* Gestión de contenedores
-* Gestión de Imágenes 
-* Ejemplos con NGINX
+- [¿Qué son los contenedores?](#qué-son-los-contenedores)
+        - [Las ventajas más importantes en comparación a una mv son:](#las-ventajas-más-importantes-en-comparación-a-una-mv-son)
+- [¿Qué es Docker?](#qué-es-docker)
+    - [Componentes de Docker](#componentes-de-docker)
+- [Instalación de Docker en Debian Buster](#instalación-de-docker-en-debian-buster)
+- [Ejecutar Docker sin SUDO](#ejecutar-docker-sin-sudo)
+- [Gestión de contenedores](#gestión-de-contenedores)
+- [Comprobar que docker está instalado correctamente](#comprobar-que-docker-está-instalado-correctamente)
+- [Ejemplo básico: Ejecutar un contenedor con Nginx](#ejemplo-básico-ejecutar-un-contenedor-con-nginx)
+- [Gestión de imágenes](#gestión-de-imágenes)
+  - [Crear imágenes. Fichero Dockerfile](#crear-imágenes-fichero-dockerfile)
+  - [Ejemplo 1: Crear imagen con Nginx](#ejemplo-1-crear-imagen-con-nginx)
+  - [Ejemplo 2: CREAR UNA VERSIÓN NUEVA DE LA APP](#ejemplo-2-crear-una-versión-nueva-de-la-app)
+  - [Funcionamiento](#funcionamiento)
 ______________
 
-## ¿Qué son los contendores?
+## ¿Qué son los contenedores?
 
 {{< alert type="dark" >}}
  Son diferentes compartimentos aislados dentro de un solo sistema operativo y actúan como máquinas virtuales aunque no lo son, con esto nos referimos a que comparten muchas de las mismas características de una maquina virtual (seguridad, almacenamiento, aislamiento de redes, entre otras...), pero comparten el **mismo kernel**.
@@ -280,7 +287,7 @@ Podemos crear una imagen a partir de un fichero **Dockerfile**.
 Este fichero es un archivo de texto plano que contiene una serie de instrucciones necesarias para crear una imagen con el propósito de hacer funcionar una aplicación en un contendor.
 {{< /alert >}}
 
-### Ejemplo 1:Nginx
+### Ejemplo 1: Crear imagen con Nginx
 
 Puedes consultar la [documentacion oficial](https://hub.docker.com/_/nginx) para más información.
 
