@@ -1,6 +1,6 @@
 ---
 title: "Introducción a Kubernetes"
-date: 2021-03-20
+date: 2021-08-23
 menu:
   sidebar:
     name: "Introducción a Kubernetes"
