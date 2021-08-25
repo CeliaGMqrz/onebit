@@ -120,9 +120,9 @@ Es un objeto de la API que administra el acceso externo a los servicios en un cl
 
 
 {{< alert type="warning">}}
-Si has llegado a este punto del post estarás diciendo "Sí, la teoría la tengo pero y la práctica?. Pues bien así a *grandes rasgos* resumimos:
+Pues así a *grandes rasgos* resumimos:
 
-Kubernetes es un software que actúa sobre un clúster de nodos donde se ponen en funcionamiento varios contenedores, hay varios controladores o nodos que se encargan de mandar trabajo a otros nodos (los workers) que son los que ejecutan el trabajo.
+Kubernetes es un software que actúa sobre un clúster de nodos donde se ponen en funcionamiento varios contenedores, hay varios controladores o nodos que se encargan de mandar trabajo a otros nodos (los workers) que son los que ejecutan el trabajo. Este trabajo consiste en gestionar aplicaciones de forma más organizada, rápida y eficaz.
 
 Teniendo en cuenta este resumen pasamos a la práctica.
 {{< /alert >}}
@@ -271,6 +271,6 @@ web-nginx    NodePort    10.98.13.146   <none>        80:30548/TCP   5s
 
 De manera que podemos acceder a la ip de minkube con el puerto asignado y debería de verse la página inidial de nuestro Nginx, que en este caso la modificamos en el [post anterior](https://www.celiagm.es/posts/sistemas/docker/) con Docker.
 
-![nginx-kubernetes.png](/images/posts/nginx-kubernetes.png)
+![nginx-kubernetes.png](/images/posts/kubernetes/nginx-kubernetes.png)
 
 
