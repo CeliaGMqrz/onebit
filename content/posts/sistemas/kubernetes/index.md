@@ -263,10 +263,10 @@ Ahora vamos a exponer el puerto 80 de nuestro nginx especificando un tipo NodePo
 ```shell 
 celiagm@debian:~/kubernetes$ kubectl expose deployment web-nginx --port=80 --type=NodePort
 service/web-nginx exposed
-celiagm@debian:~/kubernetes$ kubectl get services
-NAME         TYPE        CLUSTER-IP     EXTERNAL-IP   PORT(S)        AGE
-kubernetes   ClusterIP   10.96.0.1      <none>        443/TCP        24m
-web-nginx    NodePort    10.98.13.146   <none>        80:30548/TCP   5s
+celiagm@debian:~/github/onebit$ kubectl get services
+NAME         TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP        10m
+web-nginx    NodePort    10.106.84.137   <none>        80:30680/TCP   9m34s
 ```
 
 De manera que podemos acceder a la ip de minkube con el puerto asignado y debería de verse la página inidial de nuestro Nginx, que en este caso la modificamos en el [post anterior](https://www.celiagm.es/posts/sistemas/docker/) con Docker.
