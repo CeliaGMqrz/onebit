@@ -29,7 +29,7 @@ En este post vamos a dar una breve introducción de Kubernetes:
   - [Instalación de minikube](#instalación-de-minikube)
   - [Instalación de kubectl](#instalación-de-kubectl)
   - [Iniciar minkube y obtener la ip](#iniciar-minkube-y-obtener-la-ip)
-  - [Obtener la ip de minikube https://www.celiagm.es/posts/sistemas/docker/stra aplicación.](#obtener-la-ip-de-minikube-httpswwwceliagmespostssistemasdockerstra-aplicación)
+  - [Obtener la ip de minikube.](#obtener-la-ip-de-minikube)
   - [Crear deployment](#crear-deployment)
 ______________
 
@@ -233,7 +233,7 @@ timeToStop: Nonexistent
 
 ```
 
-### Obtener la ip de minikube https://www.celiagm.es/posts/sistemas/docker/stra aplicación. 
+### Obtener la ip de minikube. 
 
 ```shell 
 celiagm@debian:~/kubernetes$ minikube ip 
