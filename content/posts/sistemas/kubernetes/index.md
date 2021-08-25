@@ -10,8 +10,10 @@ menu:
 hero: images/kubernetes.png
 ---
 
+Te recomiendo si no conoces Docker ir esta [entrada](https://www.celiagm.es/posts/sistemas/docker/) antes de continuar con este post.
 ______________
 En este post vamos a dar una breve introducción de Kubernetes:
+
 
 - [¿Qué es Kubernetes?](#qué-es-kubernetes)
 - [Características mas notables](#características-mas-notables)
@@ -27,7 +29,7 @@ En este post vamos a dar una breve introducción de Kubernetes:
   - [Instalación de minikube](#instalación-de-minikube)
   - [Instalación de kubectl](#instalación-de-kubectl)
   - [Iniciar minkube y obtener la ip](#iniciar-minkube-y-obtener-la-ip)
-  - [Obtener la ip de minikube](#obtener-la-ip-de-minikube)
+  - [Obtener la ip de minikube https://www.celiagm.es/posts/sistemas/docker/stra aplicación.](#obtener-la-ip-de-minikube-httpswwwceliagmespostssistemasdockerstra-aplicación)
   - [Crear deployment](#crear-deployment)
 ______________
 
@@ -231,10 +233,7 @@ timeToStop: Nonexistent
 
 ```
 
-### Obtener la ip de minikube 
-
-
-Primero obtenemos la ip de minikube, que es la que vamos a usar para ver en el navegador nuestra aplicación. 
+### Obtener la ip de minikube https://www.celiagm.es/posts/sistemas/docker/stra aplicación. 
 
 ```shell 
 celiagm@debian:~/kubernetes$ minikube ip 
