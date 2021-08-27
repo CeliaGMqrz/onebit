@@ -26,6 +26,7 @@ En este post vamos a dar una breve introducción de Docker:
   - [Ejemplo 1: Crear imagen con Nginx](#ejemplo-1-crear-imagen-con-nginx)
   - [Ejemplo 2: Crear una nueva version de la app](#ejemplo-2-crear-una-nueva-version-de-la-app)
   - [Funcionamiento](#funcionamiento)
+- [Añadir contenido estático mas visual](#añadir-contenido-estático-mas-visual)
 ______________
 
 ## ¿Qué son los contenedores?
@@ -484,3 +485,22 @@ Si queremos distribuir esta nueva version solo tenemos que subirla a docker hub
 docker push cgmarquez95/pruebanginx:v2
 ```
 
+
+## Añadir contenido estático mas visual 
+
+Para ello vamos a tirar de un repo que tengo en mi git para la web. 
+
+El fichero Dockerfile es:
+
+```shell
+FROM nginx
+MAINTAINER Celia <cgarmai95@gmail.com>
+RUN sed -i '$ d' /etc/apt/sources.list && apt-get update && apt-get install -y \
+        git \
+        nano && mkdir /home/proyecto_htmlcss && git clone https://github.com/CeliaGMqrz/proyecto_htmlcss.git /home/proyecto_htmlcss \
+        && cp -r /home/proyecto_htmlcss/* /usr/share/nginx/html/.
+```
+
+Se vería de la siguiente manera, haciendo el mismo procedimiento que hemos hecho hasta ahora.
+
+![v3.png](/images/posts/docker/v3.png)

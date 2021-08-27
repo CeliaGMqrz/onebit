@@ -31,6 +31,11 @@ En este post vamos a dar una breve introducción de Kubernetes:
   - [Iniciar minkube y obtener la ip](#iniciar-minkube-y-obtener-la-ip)
   - [Obtener la ip de minikube.](#obtener-la-ip-de-minikube)
   - [Crear deployment](#crear-deployment)
+  - [Crear servicio](#crear-servicio)
+  - [Obtener todos los elementos activos](#obtener-todos-los-elementos-activos)
+- [Escalar el POD activo](#escalar-el-pod-activo)
+- [Actualización nueva versión](#actualización-nueva-versión)
+  - [Funcionamiento del despliegue de la nueva version (v3)](#funcionamiento-del-despliegue-de-la-nueva-version-v3)
 ______________
 
 {{< alert type="info" >}}
@@ -257,8 +262,24 @@ NAME        READY   UP-TO-DATE   AVAILABLE   AGE
 web-nginx   1/1     1            1           16s
 ```
 
-Ahora vamos a exponer el puerto 80 de nuestro nginx especificando un tipo NodePort para poder acceder desde el exterior y ver nuestra aplicación en el navegador. Kubernetes asigna un puerto aleatorio del 30000 al 40000 para cada servicio. 
+### Crear servicio 
 
+Ahora vamos a exponer el puerto 80 de nuestro nginx especificando un tipo **NodePort** para poder acceder desde el **exterior** y ver nuestra aplicación en el navegador.
+
+En otras palabras:
+
+El servicio va mapear un puerto aleatorio que va desde el 30000 al 40000 de nuestro host físico al puerto 80 de nuestro contenedor.
+
+
+> También tenemos el tipo **ClusterIP** que permite el acceso a la aplicación internamente. 
+
+
+La ejecución sería:
+
+```shell 
+kubectl expose deployment web-nginx --port=80 --type=NodePort
+```
+Salida:
 ```shell 
 celiagm@debian:~/kubernetes$ kubectl expose deployment web-nginx --port=80 --type=NodePort
 service/web-nginx exposed
@@ -268,8 +289,95 @@ kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP        10m
 web-nginx    NodePort    10.106.84.137   <none>        80:30680/TCP   9m34s
 ```
 
-De manera que podemos acceder a la ip de minkube con el puerto asignado y debería de verse la página inidial de nuestro Nginx, que en este caso la modificamos en el [post anterior](https://www.celiagm.es/posts/sistemas/docker/) con Docker.
+De manera que podemos acceder a la ip del nodo maestro (minikube) con el puerto asignado y debería de verse la página inicial de nuestro Nginx, que en este caso la modificamos en el [post anterior](https://www.celiagm.es/posts/sistemas/docker/) con Docker.
+
+
 
 ![nginx-kubernetes.png](/images/posts/kubernetes/nginx-kubernetes.png)
+
+
+### Obtener todos los elementos activos 
+
+```shell 
+celiagm@debian:~$ kubectl get all
+NAME                             READY   STATUS    RESTARTS   AGE
+pod/web-nginx-688484dfdc-n652r   1/1     Running   0          40h
+
+NAME                 TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+service/kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP        40h
+service/web-nginx    NodePort    10.106.84.137   <none>        80:30680/TCP   40h
+
+NAME                        READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/web-nginx   1/1     1            1           40h
+
+NAME                                   DESIRED   CURRENT   READY   AGE
+replicaset.apps/web-nginx-688484dfdc   1         1         1       40h
+
+```
+
+## Escalar el POD activo 
+
+Una de las ventajas de Kubernetes es la potencia que tiene al escalar los diferentes elementos. 
+
+Si queremos un **balanceo de carga** solo tenemos que escalar.
+
+```shell 
+celiagm@debian:~$ kubectl scale deploy web-nginx --replicas=3
+deployment.apps/web-nginx scaled
+celiagm@debian:~$ kubectl get pods
+NAME                         READY   STATUS    RESTARTS   AGE
+web-nginx-688484dfdc-gkcgj   1/1     Running   0          38s
+web-nginx-688484dfdc-n652r   1/1     Running   0          40h
+web-nginx-688484dfdc-xtl9m   1/1     Running   0          38s
+```
+
+> Si accedemos al navegador varias veces, aunque no sea aparentemente visible se produce un balanceo de carga entre los tres nuevos contenedores. 
+
+
+## Actualización nueva versión 
+
+Kubernetes no crea nuevas imágenes como docker sino que las utiliza. 
+
+Vamos a docker a crear una nueva versión de nuestra imagen (v3) y vamos a tratar de actualizar el despliegue que tenemos en nuestro Kubernetes de forma continuada. 
+
+> Me salto la parte en la que creo la nueva versión de la imagen en Docker porque este procedimiento ya está en el post de [Introduccción a Docker](https://www.celiagm.es/posts/sistemas/docker/)
+
+
+Ejecutamos el siguiente comando para actualizar la nueva versión de nuestra aplicación.
+
+```shell 
+kubectl set image deployment web-nginx *=cgmarquez95/pruebanginx:v3
+```
+
+Salida:
+```shell 
+celiagm@debian:~/nginx$ kubectl set image deployment web-nginx *=cgmarquez95/pruebanginx:v3
+deployment.apps/web-nginx image updated
+celiagm@debian:~/nginx$ kubectl get all
+NAME                             READY   STATUS              RESTARTS   AGE
+pod/web-nginx-688484dfdc-gkcgj   0/1     Terminating         0          5h1m
+pod/web-nginx-688484dfdc-n652r   1/1     Running             0          45h
+pod/web-nginx-688484dfdc-xtl9m   0/1     Terminating         0          5h1m
+pod/web-nginx-7bc68bfff6-fxvc4   1/1     Running             0          13s
+pod/web-nginx-7bc68bfff6-pxgsw   1/1     Running             0          4s
+pod/web-nginx-7bc68bfff6-rhbjw   0/1     ContainerCreating   0          2s
+
+NAME                 TYPE        CLUSTER-IP      EXTERNAL-IP   PORT(S)        AGE
+service/kubernetes   ClusterIP   10.96.0.1       <none>        443/TCP        45h
+service/web-nginx    NodePort    10.106.84.137   <none>        80:30680/TCP   45h
+
+NAME                        READY   UP-TO-DATE   AVAILABLE   AGE
+deployment.apps/web-nginx   3/3     3            3           45h
+
+NAME                                   DESIRED   CURRENT   READY   AGE
+replicaset.apps/web-nginx-688484dfdc   1         1         1       45h
+replicaset.apps/web-nginx-7bc68bfff6   3         3         2       13s
+
+```
+
+### Funcionamiento del despliegue de la nueva version (v3) 
+
+![miwuf.png](/images/posts/kubernetes/miwuf.png)
+
 
 
