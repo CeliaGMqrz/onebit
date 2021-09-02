@@ -91,7 +91,7 @@ Pasos a seguir:
 
 ## Aplicación funcionando
 
-Vamos a la url del sitio y comprobamos que está en funcionamiento 
+Vamos a la url del sitio y comprobamos que está en funcionamiento.
 
 ![despliegue.png](/images/posts/openshift/despliegue.png)
 
