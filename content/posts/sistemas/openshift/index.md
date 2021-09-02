@@ -64,6 +64,7 @@ Pasos a seguir:
 
 * Registrarse en el siguiente [enlace](https://manage.openshift.com/register/plan)
 * Elegir el plan adecuado para tí. 
+  
 * Get Started in the Sandbox
 
 ![get_started.png](/images/posts/openshift/get_started.png)
@@ -78,7 +79,7 @@ Pasos a seguir:
 
 * Solo tenemos que añadir la url del repositorio y elegir nuestro servicio web, en nuestro caso elegiremos apache. 
 
-![import.png](/images/posts/openshift/start_using.png)
+![import.png](/images/posts/openshift/import.png)
 
 * Vemos que se nos ha creado el despliegue 
 
