@@ -85,7 +85,9 @@ Pasos a seguir:
 
 ![topology.png](/images/posts/openshift/topology.png)
 
-* Si vamos viendo el menú de despliegue a la izquierda podremos comprobar que se nos ha creado un pod, un despliegue, replicaset, un servicio... Todo lo que conlleva el despliegue de la apliación. 
+* Si vamos viendo el menú de despliegue a la izquierda podremos comprobar que se nos ha creado un pod, un despliegue, replicaset, un servicio... Todo lo que conlleva el despliegue de la aplicación. 
+
+![elementos.png](/images/posts/openshift/elementos.png)
 
 ## Aplicación funcionando
 
