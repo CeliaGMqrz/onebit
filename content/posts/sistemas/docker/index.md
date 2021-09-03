@@ -26,7 +26,13 @@ En este post vamos a dar una breve introducción de Docker:
   - [Ejemplo 1: Crear imagen con Nginx](#ejemplo-1-crear-imagen-con-nginx)
   - [Ejemplo 2: Crear una nueva version de la app](#ejemplo-2-crear-una-nueva-version-de-la-app)
   - [Funcionamiento](#funcionamiento)
-- [Añadir contenido estático mas visual](#añadir-contenido-estático-mas-visual)
+  - [Un ejemplo estático más visual](#un-ejemplo-estático-más-visual)
+- [Un poco de Networking en Docker](#un-poco-de-networking-en-docker)
+  - [Red bridge por defecto](#red-bridge-por-defecto)
+    - [Mapeo de puertos. Reglas de iptables.](#mapeo-de-puertos-reglas-de-iptables)
+    - [Crear una red en Docker](#crear-una-red-en-docker)
+- [Docker Compose](#docker-compose)
+  - [Instalación de Docker-Compose](#instalación-de-docker-compose)
 ______________
 
 ## ¿Qué son los contenedores?
@@ -486,7 +492,7 @@ docker push cgmarquez95/pruebanginx:v2
 ```
 
 
-## Añadir contenido estático mas visual 
+### Un ejemplo estático más visual 
 
 Para ello vamos a tirar de un repo que tengo en mi git para la web. 
 
@@ -504,3 +510,222 @@ RUN sed -i '$ d' /etc/apt/sources.list && apt-get update && apt-get install -y \
 Se vería de la siguiente manera, haciendo el mismo procedimiento que hemos hecho hasta ahora.
 
 ![v3.png](/images/posts/docker/v3.png)
+
+## Un poco de Networking en Docker 
+
+Hemos visto ejemplos de creación de contenedores a partir de imagenes propias o públicas. Ahora vamos a hablar un poco sobre las redes.
+
+{{< alert type="dark" >}}
+Estos son los comandos más básicos para gestionar las redes en Docker
+
+```shell
+docker network connect/disconnect
+docker network create 
+docker network inspect 
+docker network ls 
+dokcer network rm 
+```
+{{< /alert >}}
+
+Docker crea tres tipos de redes al instalarlo. 
+
+> En este post sólo vamos a hablar de red bridge por defecto.
+
+```shell 
+celiagm@debian:~$ docker network ls
+NETWORK ID     NAME       DRIVER    SCOPE
+2b48025c4cf6   bridge     bridge    local
+4d0c4f476c87   host       host      local
+0aa9a9de8df1   none       null      local
+```
+### Red bridge por defecto 
+
+**Bridge**, es la red por defecto. Que corresponde a la interfaz de red `Docker0` que se crea en el host físico. Esta actúa como la **puerta de enlace** de los contenedores. Cada contenedor que se crea adopta una dirección ip en ese rango de red.
+
+Si ejecutamos `ip a` en el host físico, podemos ver como se ha creado la siguiente interfaz:
+
+```shell 
+9: docker0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default 
+    link/ether 02:42:65:69:c5:6f brd ff:ff:ff:ff:ff:ff
+    inet 172.17.0.1/16 brd 172.17.255.255 scope global docker0
+       valid_lft forever preferred_lft forever
+    inet6 fe80::42:65ff:fe69:c56f/64 scope link 
+       valid_lft forever preferred_lft forever
+```
+
+Si ejecutamos un contenedor:
+
+```shell
+celiagm@debian:~$ docker run --name web -d -p 8080:80 cgmarquez95/pruebanginx:v3
+d0e07f340c0442f54963ff5ab8007ade6bc0c33542ad47b52734610f57f8d492
+```
+
+Y entramos dentro de ese contenedor:
+
+```shell
+celiagm@debian:~$ docker exec -ti  web /bin/bash
+```
+Comprobamos que la interfaz de red ha tomado una dirección ip que está en el rango que docker ha creado.
+
+```shell 
+root@d0e07f340c04:/# ip a
+1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default qlen 1000
+    link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
+    inet 127.0.0.1/8 scope host lo
+       valid_lft forever preferred_lft forever
+16: eth0@if17: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default 
+    link/ether 02:42:ac:11:00:02 brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet 172.17.0.2/16 brd 172.17.255.255 scope global eth0
+       valid_lft forever preferred_lft forever
+
+```
+De igual forma, en nuestro host físico tambien podemos comprobar que se ha creado esa red de ese contenedor en concreto
+
+```shell
+17: vethce4f46a@if16: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker0 state UP group default 
+    link/ether 72:ad:94:0a:fa:3e brd ff:ff:ff:ff:ff:ff link-netnsid 0
+    inet6 fe80::70ad:94ff:fe0a:fa3e/64 scope link 
+       valid_lft forever preferred_lft forever
+
+```
+
+Si ejecutamos `docker inspect web` de nuestro contenedor y vamos al apartado de **networks**, vemos que la puerta de enlace coincide con la dirección ip de la interfaz de `Docker0` del host físico.
+
+```shell 
+celiagm@debian:~$ docker inspect web | grep 'Gateway'
+            "Gateway": "172.17.0.1",
+            "IPv6Gateway": "",
+                    "Gateway": "172.17.0.1",
+                    "IPv6Gateway": "",
+
+```
+
+Y también podemos comprobar la dirección ip que ha tomado en ese rango:
+
+```shell 
+celiagm@debian:~$ docker inspect web | grep -i 'ipaddress'
+            "SecondaryIPAddresses": null,
+            "IPAddress": "172.17.0.2",
+                    "IPAddress": "172.17.0.2",
+```
+
+
+#### Mapeo de puertos. Reglas de iptables.
+
+Como hemos expuesto el puerto 80 del contenedor al puerto 8080 de nuestro host físico, Docker lo que hace es crear una **regla de iptables DNAT** para pasar el tráfico por ahí.
+
+```sh
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination         
+DOCKER     all  --  0.0.0.0/0           !127.0.0.0/8          ADDRTYPE match dst-type LOCAL
+
+Chain DOCKER (2 references)
+target     prot opt source               destination         
+RETURN     all  --  0.0.0.0/0            0.0.0.0/0           
+RETURN     all  --  0.0.0.0/0            0.0.0.0/0           
+RETURN     all  --  0.0.0.0/0            0.0.0.0/0           
+DNAT       tcp  --  0.0.0.0/0            0.0.0.0/0            tcp dpt:8080 to:172.17.0.2:80
+
+```
+#### Crear una red en Docker 
+
+Podemos crear una red, a esta red la vamos a llamar `local1`. Le indicamos que va ser de tipo bridge.
+
+```shell 
+docker network create -d bridge local1
+```
+Vemos que se ha creado:
+
+```shell 
+celiagm@debian:~$ docker network ls
+NETWORK ID     NAME       DRIVER    SCOPE
+2b48025c4cf6   bridge     bridge    local
+4d0c4f476c87   host       host      local
+8871b1c21717   local1     bridge    local
+0aa9a9de8df1   none       null      local
+```
+En el host físico también podemos ver que se ha creado la red de tipo bridge:
+
+```shell 
+18: br-8871b1c21717: <NO-CARRIER,BROADCAST,MULTICAST,UP> mtu 1500 qdisc noqueue state DOWN group default 
+    link/ether 02:42:c9:a6:56:c1 brd ff:ff:ff:ff:ff:ff
+    inet 172.19.0.1/16 brd 172.19.255.255 scope global br-8871b1c21717
+       valid_lft forever preferred_lft forever
+
+```
+
+En mi caso tengo el contenedor corriendo, lo vamos a parar y volvemos a ejecutarlo pero con la nueva red local que hemos creado ahora, pasándole el nuevo parámetro.
+
+> Más adelante podemos ver como conectar a la red nueva sin necesidad de parar el contenedor.
+
+```shell
+docker run --name web --network=local1 -d -p 8080:80 cgmarquez95/pruebanginx:v3
+```
+Comprobamos que ahora tiene la puerta de enlace y la direccion ip en el rango de la nueva red `local1`.
+
+```shell 
+docker inspect web
+```
+Salida:
+```sh
+                   "Gateway": "172.19.0.1",
+                    "IPAddress": "172.19.0.2",
+
+```
+
+Si quisieramos conectar otro contenedor ,que estuviera funcionando, a esta nueva red para interconectarlos entre sí solo tenemos que ejecutar el siguiente comando.
+
+```shell 
+docker connect local1 otro_container
+```
+
+De esta forma ya estarían en la misma red y pueden verse entre sí.
+
+
+## Docker Compose 
+
+Hasta ahora hemos utilizado Docker para la creación de contenedores, pero ahora vamos a hablar de Docker-Compose.
+
+Docker-Compose es una herramienta que sirve para definir y ejecutar aplicaciones con múltiples contenedores a partir de un fichero de extensión YAML. Estos contenedores por lo general están configurados de forma que interaccionan entre ellos. 
+
+> Por ejemplo: Queremos desplegar una aplicación web que necesita una base de datos y un servidor web. Pues a partir del fichero *yml* levantamos varios contenedores interconectados entre sí, cada uno haciendo su función.
+
+### Instalación de Docker-Compose 
+
+Podemos descargarlo desde la paquetería de repositorios Debian.
+(**Actualmente no recomendado**) 
+
+```shell
+# Añadimos la clave GPG
+curl -fsSL https://download.docker.com/linux/debian/gpg | sudo apt-key add -
+# Buscamos el paquete 
+sudo apt-cache policy docker-compose
+# Lo instalamos
+sudo apt-get install docker-compose
+```
+Si comprobamos la versión podemos ver que está atrasada (actualmente) en referencia al repositorio oficial.
+
+```shell 
+celiagm@debian:~/docker/compose/hello-world$ docker-compose --version
+docker-compose version 1.21.0, build unknown
+```
+
+Por lo que vamos a instalarlo desde el repositorio de github de la siguiente forma (así pudiendo elegir la [versión más reciente](https://github.com/docker/compose/releases)):
+
+```sh
+sudo curl -L https://github.com/docker/compose/releases/download/1.29.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
+
+#Le damos los permisos necesarios 
+
+sudo chmod +x /usr/local/bin/docker-compose
+
+```
+Comprobamos la version de docker-compose
+
+Salida:
+```shell
+celiagm@debian:~$ docker-compose --version
+docker-compose version 1.29.2, build 5becea4c
+
+```
+
