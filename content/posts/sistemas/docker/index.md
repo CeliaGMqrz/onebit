@@ -959,9 +959,9 @@ Otra opción es crear volúmenes de contenedores de datos pero eso no lo vamos a
 ## Docker Compose 
 
 Hasta ahora hemos utilizado Docker para la creación de contenedores, pero ahora vamos a hablar de Docker-Compose.
-
+{{< alert type="dark" >}}
 Docker-Compose es una herramienta que sirve para definir y ejecutar aplicaciones con múltiples contenedores a partir de un fichero de extensión YAML. Estos contenedores por lo general están configurados de forma que interaccionan entre ellos. 
-
+{{< /alert >}}
 > Por ejemplo: Queremos desplegar una aplicación web que necesita una base de datos y un servidor web. Pues a partir del fichero *yml* levantamos varios contenedores interconectados entre sí, cada uno haciendo su función.
 
 ### Instalación de Docker-Compose 
