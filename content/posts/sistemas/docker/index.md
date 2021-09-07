@@ -305,7 +305,10 @@ Podemos crear una imagen a partir de un fichero **Dockerfile**.
 Este fichero es un archivo de texto plano que contiene una serie de instrucciones necesarias para crear una imagen con el propósito de hacer funcionar una aplicación en un contendor.
 {{< /alert >}}
 
+{{< alert type="success" >}}
 **Ejemplo 1: Crear imagen con Nginx**
+{{< /alert >}}
+
 
 Puedes consultar la [documentacion oficial](https://hub.docker.com/_/nginx) para más información.
 
@@ -430,8 +433,10 @@ Si vamos a nuestro DockerHub estará subida.
 Para modificar una aplicación, sea cual sea, NO se puede entrar en el contenedor y modificarla si no que BORRAMOS el contenedor actual, MODIFICAMOS LA APP y CREAMOS UN nuevo contenedor con NUEVA IMAGEN y NUEVA VERSION. 
 {{< /alert >}}
 
-
+{{< alert type="success" >}}
 **Ejemplo 2: Crear una nueva version de la app**
+{{< /alert >}}
+
 
 1. Vamos a utilizar la misma imagen que estabamos usando hasta ahora, para modificar la aplicación, en este caso, vamos a crear un fichero `index.html` simple (en el directorio actual)
 
