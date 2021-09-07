@@ -46,6 +46,13 @@ En este post vamos a dar una breve introducción de Docker:
     - [Eliminar contenedores y volumenes: Bind Mount](#eliminar-contenedores-y-volumenes-bind-mount)
 - [Docker Compose](#docker-compose)
   - [Instalación de Docker-Compose](#instalación-de-docker-compose)
+    - [Instalación (Versión más reciente)](#instalación-versión-más-reciente)
+    - [Comprobar version Docker-Compose](#comprobar-version-docker-compose)
+  - [Ejemplo: Worpress en Docker-Compose](#ejemplo-worpress-en-docker-compose)
+    - [Fichero yml](#fichero-yml)
+    - [Ver lo contenedores funcionando](#ver-lo-contenedores-funcionando)
+      - [Comprobar redes](#comprobar-redes)
+      - [Comprobar volúmenes](#comprobar-volúmenes)
 ______________
 
 ## ¿Qué son los contenedores?
@@ -187,6 +194,8 @@ docker stat
 docker top 
 # Actualizar contenedor a partir de una imagen
 docker update 
+# Eliminar todos los contenedores 
+docker rm -f $(docker ps -a -q)
 
 ```
 
@@ -952,9 +961,9 @@ celiagm@debian:~/trabajo/datos$ ls
 index.html
 
 ``` 
-{{< alert type="info" >}}
-Otra opción es crear volúmenes de contenedores de datos pero eso no lo vamos a ver en este post.
-{{< /alert >}}
+
+> Otra opción es crear volúmenes de contenedores de datos pero eso no lo vamos a ver en este post.
+
 
 ## Docker Compose 
 
@@ -962,10 +971,16 @@ Hasta ahora hemos utilizado Docker para la creación de contenedores, pero ahora
 {{< alert type="dark" >}}
 Docker-Compose es una herramienta que sirve para definir y ejecutar aplicaciones con múltiples contenedores a partir de un fichero de extensión YAML. Estos contenedores por lo general están configurados de forma que interaccionan entre ellos. 
 {{< /alert >}}
-> Por ejemplo: Queremos desplegar una aplicación web que necesita una base de datos y un servidor web. Pues a partir del fichero *yml* levantamos varios contenedores interconectados entre sí, cada uno haciendo su función.
+
+Docker compose soluciona el problema de tener que repetir cada comando al levantar nuestro contenedores, ya que parte de un fichero YML en el que estan indicados todos los elementos que necesita Docker para montar nuestros escenarios de multicontenedor. Es importante el orden en el que se escriben los parámetros.
+
+> Funciona de forma similar a Vagrant (aunque no tenga nada que ver)
+
+> Por ejemplo: Queremos desplegar una aplicación web que necesita una base de datos, un servidor web y un proxy inverso. Pues a partir del fichero *yml* levantamos varios contenedores interconectados entre sí, cada uno haciendo su función.
+
 
 ### Instalación de Docker-Compose 
-
+________________________________
 Podemos descargarlo desde la paquetería de repositorios Debian.
 (**Actualmente no recomendado**) 
 
@@ -983,23 +998,162 @@ Si comprobamos la versión podemos ver que está atrasada (actualmente) en refer
 celiagm@debian:~/docker/compose/hello-world$ docker-compose --version
 docker-compose version 1.21.0, build unknown
 ```
+___________________-
 
+#### Instalación (Versión más reciente)
 Por lo que vamos a instalarlo desde el repositorio de github de la siguiente forma (así pudiendo elegir la [versión más reciente](https://github.com/docker/compose/releases)):
 
 ```sh
+# Descargamos el binario y lo ubicamos en el lugar adecuado
 sudo curl -L https://github.com/docker/compose/releases/download/1.29.2/docker-compose-`uname -s`-`uname -m` -o /usr/local/bin/docker-compose
 
-#Le damos los permisos necesarios 
-
+# Le damos los permisos necesarios 
 sudo chmod +x /usr/local/bin/docker-compose
-
 ```
-Comprobamos la version de docker-compose
+
+#### Comprobar version Docker-Compose
+
+Comprobamos la **version** de docker-compose. Es importante saber qué versión estamos utilizando ya que la necesitaremos para definirla en los ficheros YAML.
 
 Salida:
 ```shell
 celiagm@debian:~$ docker-compose --version
 docker-compose version 1.29.2, build 5becea4c
+```
+
+### Ejemplo: Worpress en Docker-Compose
+
+Si vamos a DockerHub y comprobamos la documentación oficial nos da una idea de cómo podemos implementarlo con Docker-Compose 
+
+#### Fichero yml
+
+Vamos a crear un directorio y en su interior el fichero yml
+
+El fichero es similar al siguiente, (que ha sido modificado según mis datos):
+
+> Es importante el mapeo de puertos, la versión de docker-compose y las rutas para montar los volúmenes, que en mi caso se hace con 'bind mount'
+
+```shell
+version: '3.7'
+
+services:
+
+  wordpress:
+    image: wordpress
+    restart: always
+    ports:
+      - 5000:80
+    environment:
+      WORDPRESS_DB_HOST: db
+      WORDPRESS_DB_USER: usuario
+      WORDPRESS_DB_PASSWORD: password
+      WORDPRESS_DB_NAME: db_wp
+    volumes:
+      - ~/trabajo/datos/wp:/var/www/html
+
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: db_wp
+      MYSQL_USER: usuario
+      MYSQL_PASSWORD: password
+      MYSQL_RANDOM_ROOT_PASSWORD: password
+    volumes:
+      - ~/trabajo/datos/db:/var/lib/mysql
+```
+
+Una vez tenemos el fichero, vamos a levantar el escenario 
+
+```shell 
+celiagm@debian:~/docker/compose/wordpress$ docker-compose up -d
+Creating network "wordpress_default" with the default driver
+Pulling wordpress (wordpress:)...
+latest: Pulling from library/wordpress
+f8416d8bac72: Pull complete
+2259392b425a: Pull complete
+cfb39fc3daf5: Pull complete
+5c501de24ca4: Pull complete
+ccf5f97ffc5c: Pull complete
+a408db913f46: Pull complete
+43600da0ccdc: Pull complete
+5c02271fcd34: Pull complete
+906ec01e131c: Pull complete
+47000bdda098: Pull complete
+4b5ef9292e8e: Pull complete
+6ec123e585be: Pull complete
+60a4b15c3138: Pull complete
+d095bfabf7a3: Pull complete
+760fcc3d35e0: Pull complete
+23aa7e085fea: Pull complete
+00081f376070: Pull complete
+277bdab7dc90: Pull complete
+f51775b484a9: Pull complete
+9e5d0f8950cf: Pull complete
+9401cf44b3d4: Pull complete
+Digest: sha256:067833b1827e3f035c2c6b4be5336bf5bef498dafeb4f2d18258e439fa90c6f7
+Status: Downloaded newer image for wordpress:latest
+Pulling db (mysql:5.7)...
+5.7: Pulling from library/mysql
+a330b6cecb98: Already exists
+9c8f656c32b8: Pull complete
+88e473c3f553: Pull complete
+062463ea5d2f: Pull complete
+daf7e3bdf4b6: Pull complete
+1839c0b7aac9: Pull complete
+cf0a0cfee6d0: Pull complete
+fae7a809788c: Pull complete
+dae5a82a61f0: Pull complete
+7063da9569eb: Pull complete
+51a9a9b4ef36: Pull complete
+Digest: sha256:d9b934cdf6826629f8d02ea01f28b2c4ddb1ae27c32664b14867324b3e5e1291
+Status: Downloaded newer image for mysql:5.7
+Creating wordpress_wordpress_1 ... done
+Creating wordpress_db_1        ... done
 
 ```
 
+#### Ver lo contenedores funcionando 
+
+```shell 
+celiagm@debian:~/docker/compose/wordpress$ docker-compose ps
+        Name                       Command               State                  Ports                
+-----------------------------------------------------------------------------------------------------
+wordpress_db_1          docker-entrypoint.sh mysqld      Up      3306/tcp, 33060/tcp                 
+wordpress_wordpress_1   docker-entrypoint.sh apach ...   Up      0.0.0.0:5000->80/tcp,:::5000->80/tcp
+``` 
+
+Si vamos al navegador, veremos que ya podemos continuar con la instalacion de worpress
+
+![wp.png](/images/posts/docker/wp.png)
+
+![wp1.png](/images/posts/docker/wp1.png)
+
+##### Comprobar redes 
+Comprobamos que se ha creado una red nueva de tipo bridge 
+
+```shell 
+celiagm@debian:~/docker/compose/wordpress$ docker network ls
+NETWORK ID     NAME                DRIVER    SCOPE
+2b48025c4cf6   bridge              bridge    local
+4d0c4f476c87   host                host      local
+8871b1c21717   local1              bridge    local
+282a523347f1   minikube            bridge    local
+0aa9a9de8df1   none                null      local
+ead27083973e   wordpress_default   bridge    local
+```
+
+##### Comprobar volúmenes 
+
+```shell 
+celiagm@debian:~/trabajo/datos/db$ ls
+auto.cnf    client-cert.pem  ib_buffer_pool  ib_logfile1  performance_schema  server-cert.pem
+ca-key.pem  client-key.pem   ibdata1         ibtmp1       private_key.pem     server-key.pem
+ca.pem      db_wp            ib_logfile0     mysql        public_key.pem      sys
+celiagm@debian:~/trabajo/datos/db$ ls ../wp/
+index.php        wp-admin              wp-config.php         wp-includes        wp-mail.php       xmlrpc.php
+license.txt      wp-blog-header.php    wp-config-sample.php  wp-links-opml.php  wp-settings.php
+readme.html      wp-comments-post.php  wp-content            wp-load.php        wp-signup.php
+wp-activate.php  wp-config-docker.php  wp-cron.php           wp-login.php       wp-trackback.php
+
+```
