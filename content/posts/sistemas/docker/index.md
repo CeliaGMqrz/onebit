@@ -50,9 +50,7 @@ En este post vamos a dar una breve introducción de Docker:
     - [Comprobar version Docker-Compose](#comprobar-version-docker-compose)
   - [Ejemplo: Worpress en Docker-Compose](#ejemplo-worpress-en-docker-compose)
     - [Fichero yml](#fichero-yml)
-    - [Ver lo contenedores funcionando](#ver-lo-contenedores-funcionando)
-      - [Comprobar redes](#comprobar-redes)
-      - [Comprobar volúmenes](#comprobar-volúmenes)
+    - [Comprobar funcionamiento](#comprobar-funcionamiento)
 ______________
 
 ## ¿Qué son los contenedores?
@@ -1113,7 +1111,7 @@ Creating wordpress_db_1        ... done
 
 ```
 
-#### Ver lo contenedores funcionando 
+#### Comprobar funcionamiento
 
 ```shell 
 celiagm@debian:~/docker/compose/wordpress$ docker-compose ps
@@ -1129,7 +1127,8 @@ Si vamos al navegador, veremos que ya podemos continuar con la instalacion de wo
 
 ![wp1.png](/images/posts/docker/wp1.png)
 
-##### Comprobar redes 
+**Redes**
+
 Comprobamos que se ha creado una red nueva de tipo bridge 
 
 ```shell 
@@ -1143,7 +1142,7 @@ NETWORK ID     NAME                DRIVER    SCOPE
 ead27083973e   wordpress_default   bridge    local
 ```
 
-##### Comprobar volúmenes 
+**Volúmenes**
 
 ```shell 
 celiagm@debian:~/trabajo/datos/db$ ls
