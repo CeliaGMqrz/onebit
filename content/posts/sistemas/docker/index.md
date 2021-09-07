@@ -31,6 +31,19 @@ En este post vamos a dar una breve introducción de Docker:
   - [Red bridge por defecto](#red-bridge-por-defecto)
     - [Mapeo de puertos. Reglas de iptables.](#mapeo-de-puertos-reglas-de-iptables)
     - [Crear una red en Docker](#crear-una-red-en-docker)
+- [Volumenes en Docker](#volumenes-en-docker)
+  - [Volúmenes Docker](#volúmenes-docker)
+    - [Gestión de Volúmenes](#gestión-de-volúmenes)
+    - [Compartiendo volumen entre un contenedor y otro](#compartiendo-volumen-entre-un-contenedor-y-otro)
+      - [Crear volumen](#crear-volumen)
+      - [Crear contenedor y asociarle el volumen creado](#crear-contenedor-y-asociarle-el-volumen-creado)
+      - [La información es persistente](#la-información-es-persistente)
+      - [Crear nuevo contenedor y asociarle el volumen](#crear-nuevo-contenedor-y-asociarle-el-volumen)
+      - [Eliminar volumenes](#eliminar-volumenes)
+  - [Volumenes con Bind mounts](#volumenes-con-bind-mounts)
+    - [Crear el directorio compartido](#crear-el-directorio-compartido)
+    - [Crear el contenedor y montar el volumen](#crear-el-contenedor-y-montar-el-volumen)
+    - [Eliminar contenedores y volumenes: Bind Mount](#eliminar-contenedores-y-volumenes-bind-mount)
 - [Docker Compose](#docker-compose)
   - [Instalación de Docker-Compose](#instalación-de-docker-compose)
 ______________
@@ -681,6 +694,267 @@ docker connect local1 otro_container
 
 De esta forma ya estarían en la misma red y pueden verse entre sí.
 
+
+## Volumenes en Docker 
+
+Cuando ejecutamos un contenedor normalmente como hemos estado haciendo hasta ahora, cuando se cierra o se termina la información se pierde. Por lo tanto si queremos mantener esa información tenemos varias opciones:
+
+* Volúmenes Docker 
+* tmpfs mounts
+* Bind mounts 
+
+### Volúmenes Docker 
+
+Docker aporta la capacidad de crear volúmenes. Estos volúmenes no son más que un directorio que se crea en el sistema de ficheros. Dependiendo del sistema operativo se guardará en una ruta u otra. En Debian por ejemplo se almacena en `/var/lib/docker/volumes`.
+
+Con estos volúmenes se permite compartir información entre contenedores, hacer copias de seguridad entre otras cosas.
+
+#### Gestión de Volúmenes 
+
+Los comandos más usados son:
+
+```shell
+docker volume create 
+docker volume rm 
+docker volume ls 
+# Elimina los volumenes que no estan siendo utilizados
+docker volume prune 
+docker volume inspect 
+```
+
+#### Compartiendo volumen entre un contenedor y otro 
+
+##### Crear volumen 
+
+Vamos a crear un volumen para guardar el contenido html de nginx, de la imagen con la que hemos estado trabajando hasta ahora. 
+
+Ademas comprobamos dónde crea Docker por defecto sus volúmenes, en este caso es en la ruta `/var/lib/docker/volumes/`
+
+```shell
+# Creamos el volumen 
+celiagm@debian:~$ docker volume create datos_nginx
+datos_nginx
+
+# Vemos que se ha creado.
+celiagm@debian:~$ docker volume ls
+DRIVER    VOLUME NAME
+local     datos_nginx
+local     minikube
+
+# Con inspect podemos ver el directorio que ha creado Docker donde va a guardar toda la información.
+
+celiagm@debian:~$ docker inspect datos_nginx
+[
+    {
+        "CreatedAt": "2021-09-07T13:34:12+02:00",
+        "Driver": "local",
+        "Labels": {},
+        "Mountpoint": "/var/lib/docker/volumes/datos_nginx/_data",
+        "Name": "datos_nginx",
+        "Options": {},
+        "Scope": "local"
+    }
+]
+
+```
+##### Crear contenedor y asociarle el volumen creado
+
+Vamos a crear un contenedor asociando el volumen que hemos creado, indicando donde se va a montar con la opcion -v. En este caso vamos a montar el volumen en `/usr/share/nginx/html`, ya que es el documenroot por defecto.
+
+> Nota: Si el volumen no está creado se creará automáticamente en la ruta por defecto de Docker.
+
+```shell
+# Creamos el contenedor asociando el volumen. 
+celiagm@debian:~$ docker run -d --name my-nginx -v datos_nginx:/usr/share/nginx/html -p 5000:80 cgmarquez95/pruebanginx:v3
+7c7bc77c0728e089e62f47625f6e7dc2907b4ad3dbc224aa49804561569ddf31
+# Comprobamos que está funcionando 
+celiagm@debian:~$ docker ps 
+CONTAINER ID   IMAGE                        COMMAND                  CREATED         STATUS         PORTS                                   NAMES
+7c7bc77c0728   cgmarquez95/pruebanginx:v3   "/docker-entrypoint.…"   6 minutes ago   Up 6 minutes   0.0.0.0:5000->80/tcp, :::5000->80/tcp   my-nginx
+```
+
+Si vamos al directorio que ha creado docker en nuestro host físico podemos comprobar que se han sincronizado los directorios y tenemos todo el contenido de nuestra web.
+
+> Este directorio está gestionado directamente por Docker por lo que normalmente si no nos hemos otorgado permisos de superusuario no podremos ver el contenido. Así que entramos como **root** para comprobarlo.
+
+```shell
+root@debian:/var/lib/docker/volumes/datos_nginx/_data# ls
+50x.html		       css    images	  info_gatos.html   README.md
+convivencia_perros_gatos.html  fonts  index.html  info_perros.html  w3layouts-License.txt
+```
+Si entramos en el contenedor igualmente podemos comprobar que tenemos el *volumen montado* en la ruta indicada.
+
+```shell 
+celiagm@debian:~$ docker exec -ti my-nginx /bin/bash
+root@7c7bc77c0728:/# lsblk -f
+NAME               FSTYPE LABEL UUID FSAVAIL FSUSE% MOUNTPOINT
+nvme0n1                                             
+|-nvme0n1p1                                         
+|-nvme0n1p2                                         
+|-nvme0n1p3                                         
+|-nvme0n1p4                                         
+`-nvme0n1p5                                         
+nvme1n1                                             
+|-nvme1n1p1                                         
+`-nvme1n1p2                                         
+  |-grupoLVM1-raiz                      291G    31% /usr/share/nginx/html
+  `-grupoLVM1-swap              
+```
+
+##### La información es persistente
+
+Si por ejemplo cambiamos algo dentro del contenedor en ese directorio html lo podemos hacer directamente y la información queda grabada. Además se sincroniza con el directorio creado por Docker en nuestro host físico.
+
+**Además si borramos el contenedor el volumen no se borra.**
+
+```shell
+# Modificamos por ejemplo el index.html y le añadimos algun contenido.
+root@7c7bc77c0728:/usr/share/nginx/html# nano index.html 
+# Incluso añadimos un fichero de texto para la prueba 
+root@7c7bc77c0728:/usr/share/nginx/html# touch prueba.txt
+root@7c7bc77c0728:/usr/share/nginx/html# ls
+50x.html		       css     index.html	 prueba.txt
+README.md		       fonts   info_gatos.html	 w3layouts-License.txt
+convivencia_perros_gatos.html  images  info_perros.html
+
+# En el host físico comprobamos que la información se sincroniza por lo tanto es persistente.
+root@debian:/var/lib/docker/volumes/datos_nginx/_data# ls -l
+total 112
+-rw-r--r-- 1 root root   494 jul  6 16:59 50x.html
+-rw-r--r-- 1 root root  9432 ago 27 18:32 convivencia_perros_gatos.html
+drwxr-xr-x 2 root root  4096 sep  7 13:34 css
+drwxr-xr-x 2 root root  4096 sep  7 13:34 fonts
+drwxr-xr-x 2 root root  4096 sep  7 13:34 images
+-rw-r--r-- 1 root root 10755 sep  7 13:51 index.html
+-rw-r--r-- 1 root root 32666 ago 27 18:32 info_gatos.html
+-rw-r--r-- 1 root root 32315 ago 27 18:32 info_perros.html
+-rw-r--r-- 1 root root     0 sep  7 14:00 prueba.txt
+-rw-r--r-- 1 root root   590 ago 27 18:32 README.md
+-rw-r--r-- 1 root root  2009 ago 27 18:32 w3layouts-License.txt
+
+```
+
+##### Crear nuevo contenedor y asociarle el volumen
+
+Supongamos que queremos pasar la aplicación de nuestro nginx a un apache por lo que creamos el nuevo contenedor y le asociamos el volumen en la ruta adecuada.
+
+```shell
+# Creamos el nuevo contenedor 
+docker run -d --name my-apache -v datos_nginx:/usr/local/apache2/htdocs -p 5001 httpd:2.4
+
+#Comprobamos que están funcionando los dos 
+celiagm@debian:~$ docker ps 
+CONTAINER ID   IMAGE                        COMMAND                  CREATED          STATUS          PORTS                                   NAMES
+98654335505b   httpd:2.4                    "httpd-foreground"       2 minutes ago    Up 2 minutes    0.0.0.0:5001->80/tcp, :::5001->80/tcp   my-apache
+7c7bc77c0728   cgmarquez95/pruebanginx:v3   "/docker-entrypoint.…"   39 minutes ago   Up 39 minutes   0.0.0.0:5000->80/tcp, :::5000->80/tcp   my-nginx
+
+```
+Ahora si todo ha ido bien, en el navegador podemos ver que efectivamente se han salvado los datos. 
+
+Y se sirve el contenido tanto en Apache como en Nginx.
+
+![datos-nginx.png](/images/posts/docker/datos-nginx.png)
+
+##### Eliminar volumenes 
+
+Como podemos comprobar si eliminamos los contenedores los volúmenes no se eliminan, para ello usamos lo siguiente:
+
+```shell 
+# Paramos y eliminamos los contenedores
+celiagm@debian:~$ docker stop my-apache my-nginx && docker rm my-apache my-nginx
+my-apache
+my-nginx
+my-apache
+my-nginx
+# Listamos volúmenes
+celiagm@debian:~$ docker volume ls
+DRIVER    VOLUME NAME
+local     datos_nginx
+local     minikube
+# Elminamos volumen 
+
+# Podemos hacerlo con prune que elimina los volúmenes que ya no se están utilizando. O con "docker volume rm datos_nignx"
+
+celiagm@debian:~$ docker volume prune
+WARNING! This will remove all local volumes not used by at least one container.
+Are you sure you want to continue? [y/N] y
+Deleted Volumes:
+datos_nginx
+
+Total reclaimed space: 12.2MB
+```
+
+### Volumenes con Bind mounts
+
+Con el método bind mount hacemos la información persistente y estará gestionada por nosotros mismos, a diferencia de los volúmenes Docker que requieren permisos. Este sistema es muy parecido ya que se trata de montar una parte del sistema de ficheros en el contenedor. Sería así como un **directorio compartido**.
+
+#### Crear el directorio compartido 
+
+Vamos a crear un directorio en el que vamos a alojar los datos de nuestra aplicación. En este caso será un html simple.
+
+```shell 
+mkdir datos
+nano index.html 
+```
+Contenido:
+
+```shell 
+celiagm@debian:~/trabajo/datos$ cat index.html 
+<h1>Hello World</h1>
+```
+
+#### Crear el contenedor y montar el volumen 
+
+```shell
+# Creamos el contenedor indicando la ruta de nuestro directorio con el html y la ruta en la que se va a montar el volumen.
+celiagm@debian:~/trabajo/datos$ docker run -d --name web1 -v /home/celiagm/trabajo/datos:/usr/local/apache2/htdocs -p 5002:80 httpd:2.4
+a13d97cfdf0fece81511747c4ffdb39ae4ce22c66e3e39cc6a572bcee212fb64
+
+# Comprobamos que efectivamente se ha montado el volumen y obtenemos nuestro html simple.
+celiagm@debian:~/trabajo/datos$ curl localhost:5002
+<h1>Hello World</h1>
+```
+
+Si paramos el contenedor y asociamos el volumen a otro contenedor la información sigue siendo persistente. 
+
+Además podemos modificar los datos directamente desde nuestro host físico 
+
+```shell
+celiagm@debian:~/trabajo/datos$ curl localhost:5002
+<h1>Modificado</h1>
+
+```
+
+Si inspeccionamos el contenedor y vemos los Mounts comprobaremos que están asociados los directorios.
+
+```shell
+        "Mounts": [
+            {
+                "Type": "bind",
+                "Source": "/home/celiagm/trabajo/datos",
+                "Destination": "/usr/local/apache2/htdocs",
+                "Mode": "",
+                "RW": true,
+                "Propagation": "rprivate"
+            }
+        ],
+
+```
+#### Eliminar contenedores y volumenes: Bind Mount
+
+Si eliminamos los contenedores, el volumen sigue siendo persistente. En este caso como es bind mount para eliminarlos tendríamos que eliminar el directorio que hemos creado nosotros. 
+
+```shell 
+celiagm@debian:~/trabajo/datos$ docker stop web1 && docker rm web1
+web1
+web1
+celiagm@debian:~/trabajo/datos$ ls
+index.html
+
+``` 
+{{< alert type="info" >}}
+Otra opción es crear volúmenes de contenedores de datos pero eso no lo vamos a ver en este post.
+{{< /alert >}}
 
 ## Docker Compose 
 
