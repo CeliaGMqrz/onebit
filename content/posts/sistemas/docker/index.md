@@ -19,15 +19,10 @@ En este post vamos a dar una breve introducción de Docker:
 - [Instalación de Docker en Debian Buster](#instalación-de-docker-en-debian-buster)
 - [Ejecutar Docker sin SUDO](#ejecutar-docker-sin-sudo)
 - [Gestión de contenedores](#gestión-de-contenedores)
-- [Comprobar que docker está instalado correctamente](#comprobar-que-docker-está-instalado-correctamente)
 - [Ejemplo básico: Ejecutar un contenedor con Nginx](#ejemplo-básico-ejecutar-un-contenedor-con-nginx)
 - [Gestión de imágenes](#gestión-de-imágenes)
   - [Crear imágenes. Fichero Dockerfile](#crear-imágenes-fichero-dockerfile)
-  - [Ejemplo 1: Crear imagen con Nginx](#ejemplo-1-crear-imagen-con-nginx)
-  - [Ejemplo 2: Crear una nueva version de la app](#ejemplo-2-crear-una-nueva-version-de-la-app)
-  - [Funcionamiento](#funcionamiento)
-  - [Un ejemplo estático más visual](#un-ejemplo-estático-más-visual)
-- [Un poco de Networking en Docker](#un-poco-de-networking-en-docker)
+- [Networking en Docker](#networking-en-docker)
   - [Red bridge por defecto](#red-bridge-por-defecto)
     - [Mapeo de puertos. Reglas de iptables.](#mapeo-de-puertos-reglas-de-iptables)
     - [Crear una red en Docker](#crear-una-red-en-docker)
@@ -35,11 +30,7 @@ En este post vamos a dar una breve introducción de Docker:
   - [Volúmenes Docker](#volúmenes-docker)
     - [Gestión de Volúmenes](#gestión-de-volúmenes)
     - [Compartiendo volumen entre un contenedor y otro](#compartiendo-volumen-entre-un-contenedor-y-otro)
-      - [Crear volumen](#crear-volumen)
-      - [Crear contenedor y asociarle el volumen creado](#crear-contenedor-y-asociarle-el-volumen-creado)
-      - [La información es persistente](#la-información-es-persistente)
-      - [Crear nuevo contenedor y asociarle el volumen](#crear-nuevo-contenedor-y-asociarle-el-volumen)
-      - [Eliminar volumenes](#eliminar-volumenes)
+    - [Eliminar volumenes](#eliminar-volumenes)
   - [Volumenes con Bind mounts](#volumenes-con-bind-mounts)
     - [Crear el directorio compartido](#crear-el-directorio-compartido)
     - [Crear el contenedor y montar el volumen](#crear-el-contenedor-y-montar-el-volumen)
@@ -197,7 +188,7 @@ docker rm -f $(docker ps -a -q)
 
 ```
 
-## Comprobar que docker está instalado correctamente 
+**Comprobar que docker está instalado correctamente** 
 
 * Actualmente tenemos la siguiente **version** 
 
@@ -314,7 +305,7 @@ Podemos crear una imagen a partir de un fichero **Dockerfile**.
 Este fichero es un archivo de texto plano que contiene una serie de instrucciones necesarias para crear una imagen con el propósito de hacer funcionar una aplicación en un contendor.
 {{< /alert >}}
 
-### Ejemplo 1: Crear imagen con Nginx
+**Ejemplo 1: Crear imagen con Nginx**
 
 Puedes consultar la [documentacion oficial](https://hub.docker.com/_/nginx) para más información.
 
@@ -440,7 +431,7 @@ Para modificar una aplicación, sea cual sea, NO se puede entrar en el contenedo
 {{< /alert >}}
 
 
-### Ejemplo 2: Crear una nueva version de la app
+**Ejemplo 2: Crear una nueva version de la app**
 
 1. Vamos a utilizar la misma imagen que estabamos usando hasta ahora, para modificar la aplicación, en este caso, vamos a crear un fichero `index.html` simple (en el directorio actual)
 
@@ -498,7 +489,7 @@ d53e8b411740   cgmarquez95/pruebanginx:v2   "/docker-entrypoint.…"   9 minutes
 
 ```
 
-### Funcionamiento 
+**Funcionamiento**
 
 Comprobamos que efectivamente si accedemos al navegador al puerto 8080 indicado se ha modificado la aplicación.
 
@@ -512,7 +503,7 @@ docker push cgmarquez95/pruebanginx:v2
 ```
 
 
-### Un ejemplo estático más visual 
+**Un ejemplo estático más visual **
 
 Para ello vamos a tirar de un repo que tengo en mi git para la web. 
 
@@ -531,7 +522,7 @@ Se vería de la siguiente manera, haciendo el mismo procedimiento que hemos hech
 
 ![v3.png](/images/posts/docker/v3.png)
 
-## Un poco de Networking en Docker 
+## Networking en Docker 
 
 Hemos visto ejemplos de creación de contenedores a partir de imagenes propias o públicas. Ahora vamos a hablar un poco sobre las redes.
 
@@ -731,7 +722,7 @@ docker volume inspect
 
 #### Compartiendo volumen entre un contenedor y otro 
 
-##### Crear volumen 
+**Crear volumen** 
 
 Vamos a crear un volumen para guardar el contenido html de nginx, de la imagen con la que hemos estado trabajando hasta ahora. 
 
@@ -764,7 +755,7 @@ celiagm@debian:~$ docker inspect datos_nginx
 ]
 
 ```
-##### Crear contenedor y asociarle el volumen creado
+**Crear contenedor y asociarle el volumen creado**
 
 Vamos a crear un contenedor asociando el volumen que hemos creado, indicando donde se va a montar con la opcion -v. En este caso vamos a montar el volumen en `/usr/share/nginx/html`, ya que es el documenroot por defecto.
 
@@ -808,7 +799,7 @@ nvme1n1
   `-grupoLVM1-swap              
 ```
 
-##### La información es persistente
+**La información es persistente**
 
 Si por ejemplo cambiamos algo dentro del contenedor en ese directorio html lo podemos hacer directamente y la información queda grabada. Además se sincroniza con el directorio creado por Docker en nuestro host físico.
 
@@ -841,7 +832,7 @@ drwxr-xr-x 2 root root  4096 sep  7 13:34 images
 
 ```
 
-##### Crear nuevo contenedor y asociarle el volumen
+**Crear nuevo contenedor y asociarle el volumen**
 
 Supongamos que queremos pasar la aplicación de nuestro nginx a un apache por lo que creamos el nuevo contenedor y le asociamos el volumen en la ruta adecuada.
 
@@ -862,7 +853,7 @@ Y se sirve el contenido tanto en Apache como en Nginx.
 
 ![datos-nginx.png](/images/posts/docker/datos-nginx.png)
 
-##### Eliminar volumenes 
+#### Eliminar volumenes 
 
 Como podemos comprobar si eliminamos los contenedores los volúmenes no se eliminan, para ello usamos lo siguiente:
 
@@ -996,7 +987,7 @@ Si comprobamos la versión podemos ver que está atrasada (actualmente) en refer
 celiagm@debian:~/docker/compose/hello-world$ docker-compose --version
 docker-compose version 1.21.0, build unknown
 ```
-___________________-
+___________________
 
 #### Instalación (Versión más reciente)
 Por lo que vamos a instalarlo desde el repositorio de github de la siguiente forma (así pudiendo elegir la [versión más reciente](https://github.com/docker/compose/releases)):
