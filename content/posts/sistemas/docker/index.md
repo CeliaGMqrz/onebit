@@ -1138,6 +1138,8 @@ NETWORK ID     NAME                DRIVER    SCOPE
 ead27083973e   wordpress_default   bridge    local
 ```
 
+Comprobaremos que la información de los volúmenes concuerdan
+
 **Volúmenes**
 
 ```shell 
