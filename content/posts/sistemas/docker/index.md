@@ -1154,3 +1154,111 @@ readme.html      wp-comments-post.php  wp-content            wp-load.php        
 wp-activate.php  wp-config-docker.php  wp-cron.php           wp-login.php       wp-trackback.php
 
 ```
+
+### Ejemplo: Drupal + MySQL (Docker-Compose)
+
+Drupal es un sistema de gestión de contenidos o CMS. De software libre, escrito en PHP, que cuenta con una amplia y activa comunidad de usuarios y desarrolladores. También engloba muchas más funcionalidades que no vamos a entrar en detalle para este ejemplo.
+
+**El objetivo es crear un entorno con Docker que sirva Drupal con una base de datos MySQL.**
+
+#### Fichero YML 
+
+Primero vamos a crear el directorio de trabajo y el fichero YAML.
+
+```shell
+version: '3.7'
+
+# Definimos las redes que vamos a utilizar.
+# - Una red interna para conectar con la base de datos.
+# - Una red externa para que se pueda acceder desde el exterior.
+networks:
+  red_interna:
+    driver: bridge
+  red_externa:
+    driver: bridge
+
+# Definimos los servicios
+services:
+  # Definimos la base de datos
+  db:
+    container_name: drupal_mysql
+    image: mysql:5.7
+    restart: always
+    # Indicamos las variables de entorno con el usuario y contraseña.
+    environment:
+      MYSQL_DATABASE: drupal
+      MYSQL_USER: usuario
+      MYSQL_PASSWORD: password
+      MYSQL_RANDOM_ROOT_PASSWORD: "yes"
+    # Exponemos los puertos
+    ports:
+    - "3306:3306"
+    # Creamos un bind mount para persistir los datos
+    volumes:
+      - ./data/mysql:/var/lib/mysql
+    # Se definen las redes
+    networks:
+      - red_interna
+    # Nombre de la máquina
+    hostname: mysql
+  
+  # Drupal con apache
+  drupal:
+    # Nombre del contenedor
+    container_name: drupal
+    # Depende de la base de datos mysql definida
+    depends_on:
+      - db
+    image: drupal:8-apache
+    ports:
+      - 5000:80
+    networks:
+      - red_interna
+      - red_externa
+    hostname: mydrupal
+    restart: always
+```
+
+Una vez tengamos en fichero completo vamos a desplegar el entorno
+
+```shell 
+cgarcia@ws-cgarcia:~/dockerCompose/drupal$ ls
+data  docker-compose.yml  log  readme.textile
+cgarcia@ws-cgarcia:~/dockerCompose/drupal$ docker-compose up -d
+Creating drupal_mysql ... done
+Creating drupal       ... done
+
+```
+
+Comprobamos que se han desplegado los contenedores y están funcionando correctamente.
+
+```shell
+cgarcia@ws-cgarcia:~/dockerCompose/drupal$ docker ps
+CONTAINER ID   IMAGE             COMMAND                  CREATED              STATUS              PORTS                                                  NAMES
+af4ee7e15f3e   drupal:8-apache   "docker-php-entrypoi…"   About a minute ago   Up About a minute   0.0.0.0:5000->80/tcp, :::5000->80/tcp                  drupal
+e8b43307b886   mysql:5.7         "docker-entrypoint.s…"   About a minute ago   Up About a minute   0.0.0.0:3306->3306/tcp, :::3306->3306/tcp, 33060/tcp   drupal_mysql
+
+```
+
+Si accedemos al navegador con el puerto expuesto podemos ver el instalador de drupal
+
+Seleccionamos el idioma
+
+![idioma.png](/images/posts/docker/idioma.png)
+
+Elegimos la instalación estandar
+![estandar.png](/images/posts/docker/estandar.png)
+
+Indicamos la base de datos y las credenciales
+![configuracion.png](/images/posts/docker/configuracion.png)
+
+Procedimiento de instalación
+![instalando.png](/images/posts/docker/instalando.png)
+
+![traduccion.png](/images/posts/docker/traduccion.png)
+
+Configuramos el sitio y se actualiza.
+![actualizaciones.png](/images/posts/docker/actualizaciones.png)
+
+Sitio listo y funcionando.
+![cms.png](/images/posts/docker/cms.png)
