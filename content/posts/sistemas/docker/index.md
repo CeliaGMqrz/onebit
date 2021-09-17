@@ -42,6 +42,9 @@ En este post vamos a dar una breve introducción de Docker:
   - [Ejemplo: Worpress en Docker-Compose](#ejemplo-worpress-en-docker-compose)
     - [Fichero yml](#fichero-yml)
     - [Comprobar funcionamiento](#comprobar-funcionamiento)
+  - [Ejemplo: Drupal + MySQL (Docker-Compose)](#ejemplo-drupal--mysql-docker-compose)
+    - [Fichero YML](#fichero-yml-1)
+    - [Instalacion de Drupal](#instalacion-de-drupal)
 ______________
 
 ## ¿Qué son los contenedores?
@@ -1157,10 +1160,13 @@ wp-activate.php  wp-config-docker.php  wp-cron.php           wp-login.php       
 
 ### Ejemplo: Drupal + MySQL (Docker-Compose)
 
+{{< alert type="dark" >}}
 Drupal es un sistema de gestión de contenidos o CMS. De software libre, escrito en PHP, que cuenta con una amplia y activa comunidad de usuarios y desarrolladores. También engloba muchas más funcionalidades que no vamos a entrar en detalle para este ejemplo.
+{{< /alert >}}
 
+{{< alert type="danger" >}}
 **El objetivo es crear un entorno con Docker que sirva Drupal con una base de datos MySQL.**
-
+{{< /alert >}}
 #### Fichero YML 
 
 Primero vamos a crear el directorio de trabajo y el fichero YAML.
@@ -1240,6 +1246,7 @@ e8b43307b886   mysql:5.7         "docker-entrypoint.s…"   About a minute ago  
 
 ```
 
+#### Instalacion de Drupal
 Si accedemos al navegador con el puerto expuesto podemos ver el instalador de drupal
 
 Seleccionamos el idioma
@@ -1255,7 +1262,7 @@ Indicamos la base de datos y las credenciales
 Procedimiento de instalación
 ![instalando.png](/images/posts/docker/instalando.png)
 
-![traduccion.png](/images/posts/docker/traduccion.png)
+![traducciones.png](/images/posts/docker/traducciones.png)
 
 Configuramos el sitio y se actualiza.
 ![actualizaciones.png](/images/posts/docker/actualizaciones.png)
