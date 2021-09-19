@@ -12,13 +12,21 @@ section:
 # Your accomplishments
 accomplishments:
 
+- name: "Curso de Jenkins para principiantes"
+  timeline: "Sep 2021"
+  organization:
+    name: OpenWebinars
+    url: https://openwebinars.net
+  courseOverview: Curso de Jenkins para principiantes
+  certificateURL: "https://openwebinars.net/cert/X2qL1"
+
 - name: "Curso de Introducción a Docker"
   timeline: "Jun 2021"
   organization:
     name: OpenWebinars
     url: https://openwebinars.net
   courseOverview: Curso de introducción a Docker.
-  certificateURL: "https://openwebinars.net/cert/X2qL1"
+  certificateURL: "https://openwebinars.net/cert/bbWLd"
 
 - name: "Curso de SSH: Imprescindible en tiempos modernos"
   timeline: "Nov 2020"
@@ -43,3 +51,4 @@ accomplishments:
     url: https://university.mongodb.com/
   courseOverview: "Curso base de MongoDB"
   certificateURL: "/files/mongodb.pdf"
+
