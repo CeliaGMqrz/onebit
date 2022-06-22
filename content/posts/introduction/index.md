@@ -12,7 +12,7 @@ menu:
 {{< img src="/images/celia.png" height="200" width="200" float="left" title="Foto de perfil" >}}
 
 Bienvenid@s.
-Me llamo Celia, soy estudiante de **Administración de Sistemas Informáticos en Red** en el instituto IES Gonzalo Nazareno, y en este sitio web voy a ir publicando posts sobre los diferentes conocimientos que estoy adquiriendo en mi ciclo. 
+Me llamo Celia, **Administradora de sistemas informáticos en red**. Vengo de un instituto llamado IES Gonzalo Nazareno, y en este sitio web puedes encontrar publicaciones de las distintas tecnologías que he ido aprendiendo durante mi ciclo.
 
 Espero que sea de ayuda y aprendamos juntos.
 
